@@ -1,0 +1,446 @@
+{
+  "run_id": "20261103-152026_v5-strict-error-codes",
+  "timestamp": "2026-11-03T15:20:26",
+  "label": "v5 strict error_codes",
+  "model": "claude-haiku-4-5",
+  "mode": "single prompt",
+  "structured_output": "TicketResult",
+  "prompts": [
+    "\nYou triage incoming support tickets for an enterprise SaaS company. For each ticket you decide its priority, extract key entities, draft a reply to the customer, and rate your confidence.\n\nWork in this order: decide the priority from the facts first, then extract the entities, then write the reply. The reply must be consistent with the priority you chose.\n\n<priority_rules>\nClassify by business impact stated in the ticket. Ignore tone: capital letters, \"URGENT\", \"CRITICAL\", \"BUG:\" in the subject, threats to cancel or call lawyers do not change the priority. Only the facts do.\n\nP1 - critical. Any of:\n- Outage: users cannot log in, or the system crashed / is down for the organization.\n- Data loss: data or generated reports are gone or destroyed.\n- Security or privacy: other users' personal data is exposed, or unauthorized access is possible. This is P1 even if only one person noticed it.\n- A business-critical process is completely blocked (for example payroll).\n\nP2 - major. An existing feature is consistently broken or seriously degraded for a team or a production system, and the ticket gives no workaround. If the customer says retrying works, it eventually succeeds, or it is not a blocker, it is P3, not P2. Examples: wrong results after an update, a failing API endpoint or webhook, a dashboard showing stale data or failing to render, duplicate or missing records from a sync, a plan provisioned incorrectly, broad slowness across all modules after a migration. Slow-but-working is P2, not P1.\n\nP3 - minor. Any of:\n- A small or cosmetic defect in existing functionality (truncated tooltip, layout glitch). A cosmetic bug is P3, not P4.\n- An intermittent problem that works on retry, or that the customer says is not a blocker or only annoying. This stays P3 even if several people or other departments might be affected.\n- A vague ticket that does not say what is broken or what the impact is (\"things are slow\", \"it's broken\", general frustration with the product). When the ticket does not contain the facts that would justify P1 or P2, use P3 with low confidence.\n\nP4 - feature request. The customer asks for something the product does not do today (dark mode, SSO support, a calendar view, bulk export). P4 regardless of how urgent, angry or business-critical the wording is, and regardless of how many users would benefit.\n\nSeveral issues in one ticket: classify each one and use the highest priority among them. A feature request bundled with a bug does not change the bug's priority.\n</priority_rules>\n\n<entity_rules>\nEvery entity value is checked against the ticket text, so copy values verbatim. Never paraphrase, combine, translate, normalize, summarize or infer. If a value is not stated in the ticket, use null (an empty list for error_codes). null is always better than a guess.\n\n- product: the product or module name using the exact consecutive words from the ticket, keeping accents and special characters (e.g. \"inventory management module\", \"Analytics Pro\", \"Ñoño Analytics\"). Do not add words such as \"Platform\", \"Service\" or \"System\", and do not merge two phrases into one. If the ticket only says \"the platform\", \"your system\", \"the app\", \"things\", use null.\n- version: the version number exactly as written (e.g. \"3.2\", \"4.1.2\"), otherwise null.\n- error_codes: only explicit error identifiers, copied verbatim: named codes (e.g. \"SVC-503-AUTH\", \"SYNC_FAILED\"), HTTP status codes the customer reports (e.g. \"500\", \"429\"), or an error message the customer quotes in quotation marks or after \"error:\" (e.g. the ticket says: I get \"timeout exceeded\"). A symptom the customer describes in their own words is never an error code, however error-like it sounds: \"reports occasionally time out\", \"pages load slow\", \"it crashes\", \"duplicate records\" all give []. Self-check before answering: every string in error_codes must appear character-for-character in the ticket (\"timeout\" does not appear in \"time out\"); drop any that do not. When in doubt, use [].\n- affected_users: a single number, digits only, exactly as it appears in the ticket (e.g. \"500\", \"45\"). If several groups are mentioned, use the largest number stated for an affected group; never add numbers together. No words, ranges, \"~\" or parentheses. If no number is given (\"several people\", \"my team\", \"all users\", \"a bunch\"), use null.\n</entity_rules>\n\n<response_rules>\n- Write in English, professional and calm, whatever the customer's tone.\n- Acknowledge every issue the customer raised, each by name.\n- Bugs (P1-P3): acknowledge the impact, state next steps that match the priority (P1: escalated immediately to the on-call engineering team; P2: engineering is investigating; P3: we will look into it), and ask for any detail that would help troubleshooting.\n- Feature requests (P4): explain plainly that this is a capability the product does not offer today, not a defect, and say the request is logged and shared with the product team. If the customer states business stakes (compliance, a deadline, contract risk, number of users), restate them briefly so they know they were heard, and offer that their account manager can discuss options. Keep the handling at the P4 level: no urgent or immediate escalation, no emergency language, no fix, no date or timeline.\n- Vague tickets: ask specific clarifying questions (which product or page, exact error messages, since when, how many users are affected, steps to reproduce) before promising anything.\n- Do not invent facts: no case numbers, timelines, root causes or details of earlier tickets that are not in the ticket. No placeholders like [Name].\n</response_rules>\n\n<confidence_rules>\nhigh: the issue and its impact are clearly stated. medium: some facts are missing or ambiguous. low: the ticket is too vague to know what is broken.\n</confidence_rules>\n\nReturn only one JSON object with exactly these fields and nothing else:\n{\"priority\": \"P1|P2|P3|P4\", \"entities\": {\"product\": string or null, \"version\": string or null, \"error_codes\": [string], \"affected_users\": string or null}, \"response\": string, \"confidence\": \"high|medium|low\"}\n"
+  ],
+  "score": {
+    "passed": 21,
+    "total": 21,
+    "pct": 100
+  },
+  "elapsed_s": 67.5,
+  "categories": {
+    "clean": {
+      "label": "Clean inputs",
+      "passed": 4,
+      "total": 4
+    },
+    "multi_issue": {
+      "label": "Multi-issue",
+      "passed": 2,
+      "total": 2
+    },
+    "vague": {
+      "label": "Vague/unclear",
+      "passed": 3,
+      "total": 3
+    },
+    "non_native": {
+      "label": "Non-native English",
+      "passed": 3,
+      "total": 3
+    },
+    "feature_request": {
+      "label": "Feature requests",
+      "passed": 2,
+      "total": 2
+    },
+    "complex": {
+      "label": "Complex/long/edge",
+      "passed": 7,
+      "total": 7
+    }
+  },
+  "cases": [
+    {
+      "case_id": 1,
+      "category": "clean",
+      "pass": true,
+      "classification": {
+        "priority": "P1",
+        "entities": {
+          "product": null,
+          "version": "4.1.2",
+          "error_codes": [
+            "503",
+            "SVC-503-AUTH"
+          ],
+          "affected_users": "500"
+        },
+        "response": "Thank you for reporting this issue. We understand that all 500 users in your organization are unable to log in and are receiving a 503 Service Unavailable error (SVC-503-AUTH) on the login page since 2pm EST. Given that your sales team is completely blocked and this is your primary CRM tool, this has been escalated immediately to our on-call engineering team for urgent investigation.\n\nWe are treating this as a critical outage and our team is working to diagnose and resolve the authentication service issue now. We will provide you with an update as soon as we have more information.\n\nIn the meantime, please confirm:\n- Are you able to share any relevant logs or screenshots of the error?\n- Has there been any recent change to your network or authentication configuration on your end?"
+      },
+      "failures": {},
+      "judge_reason": null,
+      "raw_output": "{\"priority\":\"P1\",\"entities\":{\"product\":null,\"version\":\"4.1.2\",\"error_codes\":[\"503\",\"SVC-503-AUTH\"],\"affected_users\":\"500\"},\"response\":\"Thank you for reporting this issue. We understand that all 500 users in your organization are unable to log in and are receiving a 503 Service Unavailable error (SVC-503-AUTH) on the login page since 2pm EST. Given that your sales team is completely blocked and this is your primary CRM tool, this has been escalated immediately to our on-call engineering team for urgent investigation.\\n\\nWe are treating this as a critical outage and our team is working to diagnose and resolve the authentication service issue now. We will provide you with an update as soon as we have more information.\\n\\nIn the meantime, please confirm:\\n- Are you able to share any relevant logs or screenshots of the error?\\n- Has there been any recent change to your network or authentication configuration on your end?\",\"confidence\":\"high\"}"
+    },
+    {
+      "case_id": 2,
+      "category": "clean",
+      "pass": true,
+      "classification": {
+        "priority": "P2",
+        "entities": {
+          "product": "inventory management module",
+          "version": "2.8.0",
+          "error_codes": [],
+          "affected_users": "45"
+        },
+        "response": "Thank you for reporting this. We understand that the search function in the inventory management module is returning incorrect results for product SKUs since yesterday's update to version 2.8.0, and that this is blocking your warehouse team of 45 people who depend on search for daily picking operations.\n\nThis is a significant issue and our engineering team is investigating the regression introduced in the update. To help us troubleshoot and fix this quickly, could you provide a few details:\n\n1. Can you share a specific example of a SKU you searched for and what unrelated items were returned?\n2. Are all searches returning wrong results, or only certain types of searches (e.g., partial matches, exact matches)?\n3. Have you tried reverting to the previous version, or is that not an option in your environment?\n4. Are there any error messages in your browser console or system logs, even if not displayed in the UI?\n\nWe will prioritize this investigation and keep you updated on progress."
+      },
+      "failures": {},
+      "judge_reason": null,
+      "raw_output": "{\"priority\":\"P2\",\"entities\":{\"product\":\"inventory management module\",\"version\":\"2.8.0\",\"error_codes\":[],\"affected_users\":\"45\"},\"response\":\"Thank you for reporting this. We understand that the search function in the inventory management module is returning incorrect results for product SKUs since yesterday's update to version 2.8.0, and that this is blocking your warehouse team of 45 people who depend on search for daily picking operations.\\n\\nThis is a significant issue and our engineering team is investigating the regression introduced in the update. To help us troubleshoot and fix this quickly, could you provide a few details:\\n\\n1. Can you share a specific example of a SKU you searched for and what unrelated items were returned?\\n2. Are all searches returning wrong results, or only certain types of searches (e.g., partial matches, exact matches)?\\n3. Have you tried reverting to the previous version, or is that not an option in your environment?\\n4. Are there any error messages in your browser console or system logs, even if not displayed in the UI?\\n\\nWe will prioritize this investigation and keep you updated on progress.\",\"confidence\":\"high\"}"
+    },
+    {
+      "case_id": 3,
+      "category": "clean",
+      "pass": true,
+      "classification": {
+        "priority": "P3",
+        "entities": {
+          "product": "admin settings page",
+          "version": "5.0.1",
+          "error_codes": [],
+          "affected_users": "2"
+        },
+        "response": "Thank you for reporting this. We've noted that the tooltip for the \"Data Retention Policy\" field on the admin settings page is truncating mid-text, showing only \"Data will be retained for...\" when hovered. We understand this occurred during your admin training session and affects visibility of the full policy description.\n\nThis is a cosmetic issue and we'll look into it to ensure the complete tooltip text displays properly. In the meantime, admins can refer to the full Data Retention Policy documentation in the help center for complete details.\n\nWe appreciate you catching this during your training—it helps us improve the user experience."
+      },
+      "failures": {},
+      "judge_reason": null,
+      "raw_output": "{\"priority\":\"P3\",\"entities\":{\"product\":\"admin settings page\",\"version\":\"5.0.1\",\"error_codes\":[],\"affected_users\":\"2\"},\"response\":\"Thank you for reporting this. We've noted that the tooltip for the \\\"Data Retention Policy\\\" field on the admin settings page is truncating mid-text, showing only \\\"Data will be retained for...\\\" when hovered. We understand this occurred during your admin training session and affects visibility of the full policy description.\\n\\nThis is a cosmetic issue and we'll look into it to ensure the complete tooltip text displays properly. In the meantime, admins can refer to the full Data Retention Policy documentation in the help center for complete details.\\n\\nWe appreciate you catching this during your training—it helps us improve the user experience.\",\"confidence\":\"high\"}"
+    },
+    {
+      "case_id": 4,
+      "category": "clean",
+      "pass": true,
+      "classification": {
+        "priority": "P4",
+        "entities": {
+          "product": null,
+          "version": null,
+          "error_codes": [],
+          "affected_users": "8"
+        },
+        "response": "Thank you for the request. Bulk export to PDF is a capability the product does not offer today. We understand that exporting reports individually is time-consuming for your analytics team, and we appreciate you sharing this workflow feedback. Your request—including the suggestion for a \"Select All\" checkbox and \"Export Selected to PDF\" button—has been logged and shared with our product team for consideration. Your account manager can discuss this further and explore any options that might help streamline your current process."
+      },
+      "failures": {},
+      "judge_reason": null,
+      "raw_output": "{\"priority\":\"P4\",\"entities\":{\"product\":null,\"version\":null,\"error_codes\":[],\"affected_users\":\"8\"},\"response\":\"Thank you for the request. Bulk export to PDF is a capability the product does not offer today. We understand that exporting reports individually is time-consuming for your analytics team, and we appreciate you sharing this workflow feedback. Your request—including the suggestion for a \\\"Select All\\\" checkbox and \\\"Export Selected to PDF\\\" button—has been logged and shared with our product team for consideration. Your account manager can discuss this further and explore any options that might help streamline your current process.\",\"confidence\":\"high\"}"
+    },
+    {
+      "case_id": 5,
+      "category": "multi_issue",
+      "pass": true,
+      "classification": {
+        "priority": "P1",
+        "entities": {
+          "product": null,
+          "version": null,
+          "error_codes": [
+            "500"
+          ],
+          "affected_users": "200"
+        },
+        "response": "Thank you for reporting this. We understand the urgency given your Friday board reporting deadline.\n\nWe acknowledge two issues:\n\n1. **Billing dashboard showing incorrect numbers since Tuesday** – This is blocking your payroll process, which is critical.\n2. **CSV export feature returning a 500 error** – This is affecting 200 users on your team.\n\nBoth issues have been escalated immediately to our on-call engineering team for investigation and repair.\n\nTo help us resolve these faster, please provide:\n\n- Which product or module is the billing dashboard (e.g., \"Finance\", \"Accounting\", \"Billing Pro\")?\n- What specific numbers are wrong in the billing dashboard, and what should they be?\n- Exact steps to reproduce the 500 error on CSV export (which report or page, what filters or selections)?\n- When you say the billing numbers have been wrong since Tuesday, have they been consistently wrong, or did they become wrong at a specific time?\n\nWe will prioritize this given your board meeting on Friday. Our team will reach out as soon as we have an update."
+      },
+      "failures": {},
+      "judge_reason": "PASS - Response appropriately acknowledges both issues mentioned in the multi-issue ticket, escalates to engineering consistent with P1 priority, sets proper expectations, and asks clarifying questions to facilitate faster resolution.",
+      "raw_output": "{\"priority\":\"P1\",\"entities\":{\"product\":null,\"version\":null,\"error_codes\":[\"500\"],\"affected_users\":\"200\"},\"response\":\"Thank you for reporting this. We understand the urgency given your Friday board reporting deadline.\\n\\nWe acknowledge two issues:\\n\\n1. **Billing dashboard showing incorrect numbers since Tuesday** – This is blocking your payroll process, which is critical.\\n2. **CSV export feature returning a 500 error** – This is affecting 200 users on your team.\\n\\nBoth issues have been escalated immediately to our on-call engineering team for investigation and repair.\\n\\nTo help us resolve these faster, please provide:\\n\\n- Which product or module is the billing dashboard (e.g., \\\"Finance\\\", \\\"Accounting\\\", \\\"Billing Pro\\\")?\\n- What specific numbers are wrong in the billing dashboard, and what should they be?\\n- Exact steps to reproduce the 500 error on CSV export (which report or page, what filters or selections)?\\n- When you say the billing numbers have been wrong since Tuesday, have they been consistently wrong, or did they become wrong at a specific time?\\n\\nWe will prioritize this given your board meeting on Friday. Our team will reach out as soon as we have an update.\",\"confidence\":\"high\"}"
+    },
+    {
+      "case_id": 6,
+      "category": "multi_issue",
+      "pass": true,
+      "classification": {
+        "priority": "P2",
+        "entities": {
+          "product": "real-time analytics dashboard",
+          "version": "3.5",
+          "error_codes": [],
+          "affected_users": "12"
+        },
+        "response": "Thank you for reaching out with these two issues.\n\nFirst, regarding the stale data on your real-time analytics dashboard: we understand this is blocking your ops team's shift planning, and we take this seriously. Our engineering team is investigating why the data stopped updating on Monday. To help us troubleshoot, could you please confirm:\n- Have you seen any error messages in the dashboard or browser console?\n- Did anything change in your environment (configuration, integrations, or data sources) around that time?\n- Are all metrics stale, or only specific ones?\n\nSecond, regarding dark mode: we appreciate the feature request. Dark mode is not currently a capability in the dashboard. We've logged this request and shared it with our product team. Your account manager can discuss whether this is something we might prioritize or if there are alternative approaches that could help.\n\nPlease reply with those details about the stale data issue, and we'll get this resolved for your team as quickly as possible."
+      },
+      "failures": {},
+      "judge_reason": null,
+      "raw_output": "{\"priority\":\"P2\",\"entities\":{\"product\":\"real-time analytics dashboard\",\"version\":\"3.5\",\"error_codes\":[],\"affected_users\":\"12\"},\"response\":\"Thank you for reaching out with these two issues.\\n\\nFirst, regarding the stale data on your real-time analytics dashboard: we understand this is blocking your ops team's shift planning, and we take this seriously. Our engineering team is investigating why the data stopped updating on Monday. To help us troubleshoot, could you please confirm:\\n- Have you seen any error messages in the dashboard or browser console?\\n- Did anything change in your environment (configuration, integrations, or data sources) around that time?\\n- Are all metrics stale, or only specific ones?\\n\\nSecond, regarding dark mode: we appreciate the feature request. Dark mode is not currently a capability in the dashboard. We've logged this request and shared it with our product team. Your account manager can discuss whether this is something we might prioritize or if there are alternative approaches that could help.\\n\\nPlease reply with those details about the stale data issue, and we'll get this resolved for your team as quickly as possible.\",\"confidence\":\"high\"}"
+    },
+    {
+      "case_id": 7,
+      "category": "vague",
+      "pass": true,
+      "classification": {
+        "priority": "P3",
+        "entities": {
+          "product": null,
+          "version": null,
+          "error_codes": [],
+          "affected_users": null
+        },
+        "response": "Thank you for reaching out. We understand you're experiencing slowness and occasional errors since this morning. To help us investigate, we'll need some additional details:\n\n1. Which product or module are you using when you see these issues?\n2. Can you share the exact error messages or codes you're seeing?\n3. Which pages or features are affected?\n4. How many users on your team are experiencing this?\n5. Do you have any steps to reproduce the problem consistently?\n\nOnce we have these details, we'll look into it right away."
+      },
+      "failures": {},
+      "judge_reason": null,
+      "raw_output": "{\"priority\":\"P3\",\"entities\":{\"product\":null,\"version\":null,\"error_codes\":[],\"affected_users\":null},\"response\":\"Thank you for reaching out. We understand you're experiencing slowness and occasional errors since this morning. To help us investigate, we'll need some additional details:\\n\\n1. Which product or module are you using when you see these issues?\\n2. Can you share the exact error messages or codes you're seeing?\\n3. Which pages or features are affected?\\n4. How many users on your team are experiencing this?\\n5. Do you have any steps to reproduce the problem consistently?\\n\\nOnce we have these details, we'll look into it right away.\",\"confidence\":\"low\"}"
+    },
+    {
+      "case_id": 8,
+      "category": "vague",
+      "pass": true,
+      "classification": {
+        "priority": "P3",
+        "entities": {
+          "product": null,
+          "version": null,
+          "error_codes": [],
+          "affected_users": null
+        },
+        "response": "Thank you for reaching out, and I'm sorry to hear you're frustrated with your experience. We value your 3-year partnership and want to help.\n\nTo investigate what's going wrong, I need more specific details:\n\n- Which product or module are you using?\n- What exactly isn't working as expected? (For example: a specific feature, dashboard, API endpoint, report, or workflow)\n- When did you first notice the issue?\n- Are you seeing any error messages? If so, please share them verbatim.\n- How many people on your team are affected?\n- Do you have steps to reproduce the problem?\n\nOnce I understand the facts, I can escalate this to the right team. Please reply with as much detail as you can, and we'll get to the bottom of it."
+      },
+      "failures": {},
+      "judge_reason": "PASS - Response appropriately addresses the vague ticket by requesting specific information while maintaining a professional, empathetic tone consistent with P3 priority.",
+      "raw_output": "{\"priority\":\"P3\",\"entities\":{\"product\":null,\"version\":null,\"error_codes\":[],\"affected_users\":null},\"response\":\"Thank you for reaching out, and I'm sorry to hear you're frustrated with your experience. We value your 3-year partnership and want to help.\\n\\nTo investigate what's going wrong, I need more specific details:\\n\\n- Which product or module are you using?\\n- What exactly isn't working as expected? (For example: a specific feature, dashboard, API endpoint, report, or workflow)\\n- When did you first notice the issue?\\n- Are you seeing any error messages? If so, please share them verbatim.\\n- How many people on your team are affected?\\n- Do you have steps to reproduce the problem?\\n\\nOnce I understand the facts, I can escalate this to the right team. Please reply with as much detail as you can, and we'll get to the bottom of it.\",\"confidence\":\"low\"}"
+    },
+    {
+      "case_id": 9,
+      "category": "non_native",
+      "pass": true,
+      "classification": {
+        "priority": "P2",
+        "entities": {
+          "product": "API integration",
+          "version": "3.2",
+          "error_codes": [
+            "timeout exceeded"
+          ],
+          "affected_users": "50"
+        },
+        "response": "Thank you for reporting this issue. We understand this is affecting your production system and your customers.\n\nWe have acknowledged the following problems since your update to version 3.2:\n- Webhooks are not firing correctly\n- Data is missing from the dashboard\n- Intermittent \"timeout exceeded\" errors\n\nOur engineering team is investigating this right now. To help us resolve it faster, could you please provide:\n\n1. Approximately when did you first notice these issues after the update?\n2. Are the webhooks failing consistently, or only sometimes?\n3. For the missing dashboard data: can you describe which data or metrics are affected, and how far back the gaps extend?\n4. When you see the \"timeout exceeded\" error, does retrying the operation eventually succeed, or does it fail repeatedly?\n5. Are all 50 customers affected equally, or only some?\n\nWe will prioritize this and keep you updated on our progress."
+      },
+      "failures": {},
+      "judge_reason": null,
+      "raw_output": "{\"priority\":\"P2\",\"entities\":{\"product\":\"API integration\",\"version\":\"3.2\",\"error_codes\":[\"timeout exceeded\"],\"affected_users\":\"50\"},\"response\":\"Thank you for reporting this issue. We understand this is affecting your production system and your customers.\\n\\nWe have acknowledged the following problems since your update to version 3.2:\\n- Webhooks are not firing correctly\\n- Data is missing from the dashboard\\n- Intermittent \\\"timeout exceeded\\\" errors\\n\\nOur engineering team is investigating this right now. To help us resolve it faster, could you please provide:\\n\\n1. Approximately when did you first notice these issues after the update?\\n2. Are the webhooks failing consistently, or only sometimes?\\n3. For the missing dashboard data: can you describe which data or metrics are affected, and how far back the gaps extend?\\n4. When you see the \\\"timeout exceeded\\\" error, does retrying the operation eventually succeed, or does it fail repeatedly?\\n5. Are all 50 customers affected equally, or only some?\\n\\nWe will prioritize this and keep you updated on our progress.\",\"confidence\":\"high\"}"
+    },
+    {
+      "case_id": 10,
+      "category": "non_native",
+      "pass": true,
+      "classification": {
+        "priority": "P3",
+        "entities": {
+          "product": null,
+          "version": "2.1",
+          "error_codes": [],
+          "affected_users": "3"
+        },
+        "response": "Thank you for reporting this issue. I understand that the report button is not working consistently for some members of your team—sometimes it works, and sometimes it does not.\n\nTo help us investigate, I need a few clarifying details:\n\n1. Which product or module are you using when you try to make the report? (For example, Analytics, Reporting, Dashboard, etc.)\n2. Can you describe the exact behavior when the button does not work? Does it do nothing when clicked, show an error message, or something else?\n3. If there is an error message, please share the exact text you see.\n4. Does this happen on a specific page, or in multiple places in the system?\n5. You mentioned it might be a browser issue—which browser and version are the affected users using?\n6. Approximately when did this problem start?\n\nOnce we have these details, we will be able to look into this further. Your English is clear enough; no need to apologize."
+      },
+      "failures": {},
+      "judge_reason": null,
+      "raw_output": "{\"priority\":\"P3\",\"entities\":{\"product\":null,\"version\":\"2.1\",\"error_codes\":[],\"affected_users\":\"3\"},\"response\":\"Thank you for reporting this issue. I understand that the report button is not working consistently for some members of your team—sometimes it works, and sometimes it does not.\\n\\nTo help us investigate, I need a few clarifying details:\\n\\n1. Which product or module are you using when you try to make the report? (For example, Analytics, Reporting, Dashboard, etc.)\\n2. Can you describe the exact behavior when the button does not work? Does it do nothing when clicked, show an error message, or something else?\\n3. If there is an error message, please share the exact text you see.\\n4. Does this happen on a specific page, or in multiple places in the system?\\n5. You mentioned it might be a browser issue—which browser and version are the affected users using?\\n6. Approximately when did this problem start?\\n\\nOnce we have these details, we will be able to look into this further. Your English is clear enough; no need to apologize.\",\"confidence\":\"low\"}"
+    },
+    {
+      "case_id": 11,
+      "category": "feature_request",
+      "pass": true,
+      "classification": {
+        "priority": "P4",
+        "entities": {
+          "product": null,
+          "version": null,
+          "error_codes": [],
+          "affected_users": "2000"
+        },
+        "response": "Thank you for bringing this to our attention. We understand that SAML SSO integration is important for your security compliance requirements and that this affects your entire organization of 2000 users.\n\nI want to clarify that SAML SSO support is a capability our platform does not currently offer. This is a feature request rather than a defect in existing functionality. We have logged your request and shared it with our product team for consideration.\n\nGiven the compliance stakes and the contractual importance of this capability, I recommend that your account manager connect with you to discuss alternative solutions or options that may be available to support your security requirements. They can also provide visibility into our product roadmap and timeline for consideration.\n\nPlease have your account manager reach out, or let us know if you'd like us to facilitate that conversation."
+      },
+      "failures": {},
+      "judge_reason": "PASS - Response correctly treats the SSO capability as a feature request rather than a bug, appropriately matches the P4 classification, and escalates to account management rather than promising immediate resolution.",
+      "raw_output": "{\"priority\":\"P4\",\"entities\":{\"product\":null,\"version\":null,\"error_codes\":[],\"affected_users\":\"2000\"},\"response\":\"Thank you for bringing this to our attention. We understand that SAML SSO integration is important for your security compliance requirements and that this affects your entire organization of 2000 users.\\n\\nI want to clarify that SAML SSO support is a capability our platform does not currently offer. This is a feature request rather than a defect in existing functionality. We have logged your request and shared it with our product team for consideration.\\n\\nGiven the compliance stakes and the contractual importance of this capability, I recommend that your account manager connect with you to discuss alternative solutions or options that may be available to support your security requirements. They can also provide visibility into our product roadmap and timeline for consideration.\\n\\nPlease have your account manager reach out, or let us know if you'd like us to facilitate that conversation.\",\"confidence\":\"high\"}"
+    },
+    {
+      "case_id": 12,
+      "category": "feature_request",
+      "pass": true,
+      "classification": {
+        "priority": "P4",
+        "entities": {
+          "product": "task management module",
+          "version": null,
+          "error_codes": [],
+          "affected_users": "5"
+        },
+        "response": "Thank you for the feedback! A calendar view for tasks is a capability the product does not offer today. We've logged your request and shared it with our product team for consideration. We understand that a calendar view would help your project managers visualize deadlines more effectively. Your account manager can discuss this further with you if you'd like to explore options or share additional context about how this would support your workflow."
+      },
+      "failures": {},
+      "judge_reason": null,
+      "raw_output": "{\"priority\":\"P4\",\"entities\":{\"product\":\"task management module\",\"version\":null,\"error_codes\":[],\"affected_users\":\"5\"},\"response\":\"Thank you for the feedback! A calendar view for tasks is a capability the product does not offer today. We've logged your request and shared it with our product team for consideration. We understand that a calendar view would help your project managers visualize deadlines more effectively. Your account manager can discuss this further with you if you'd like to explore options or share additional context about how this would support your workflow.\",\"confidence\":\"high\"}"
+    },
+    {
+      "case_id": 13,
+      "category": "complex",
+      "pass": true,
+      "classification": {
+        "priority": "P2",
+        "entities": {
+          "product": null,
+          "version": "6.0",
+          "error_codes": [
+            "UPLOAD-TIMEOUT-413",
+            "429"
+          ],
+          "affected_users": "85"
+        },
+        "response": "Thank you for the detailed report, Sarah. We understand the urgency—broad performance degradation across all modules after migration is a serious issue that impacts your entire engineering team.\n\nWe acknowledge all five issues you've raised:\n1. Page load times increasing from 1.2s to 8-10s across modules\n2. Real-time notifications delayed by 30-45 seconds\n3. File uploads >5MB timing out with error UPLOAD-TIMEOUT-413\n4. API rate limiting returning 429 errors after 10 requests/minute\n5. Database queries in the reporting module taking 3-5x longer\n\nOur engineering team is investigating these performance regressions immediately. We take your SLA commitments seriously and recognize this does not meet the sub-2-second response time guarantee.\n\nTo help us investigate faster, please provide:\n- Specific page or module names where you're seeing the worst slowness\n- Exact timestamps of when the slowdown is most severe\n- Whether performance varies by time of day or user load\n- Sample API calls that are hitting the 429 rate limit\n\nWe will have someone from our infrastructure team reach out to schedule a call this week to discuss findings and next steps.\n\nThank you for your patience."
+      },
+      "failures": {},
+      "judge_reason": null,
+      "raw_output": "{\"priority\":\"P2\",\"entities\":{\"product\":null,\"version\":\"6.0\",\"error_codes\":[\"UPLOAD-TIMEOUT-413\",\"429\"],\"affected_users\":\"85\"},\"response\":\"Thank you for the detailed report, Sarah. We understand the urgency—broad performance degradation across all modules after migration is a serious issue that impacts your entire engineering team.\\n\\nWe acknowledge all five issues you've raised:\\n1. Page load times increasing from 1.2s to 8-10s across modules\\n2. Real-time notifications delayed by 30-45 seconds\\n3. File uploads >5MB timing out with error UPLOAD-TIMEOUT-413\\n4. API rate limiting returning 429 errors after 10 requests/minute\\n5. Database queries in the reporting module taking 3-5x longer\\n\\nOur engineering team is investigating these performance regressions immediately. We take your SLA commitments seriously and recognize this does not meet the sub-2-second response time guarantee.\\n\\nTo help us investigate faster, please provide:\\n- Specific page or module names where you're seeing the worst slowness\\n- Exact timestamps of when the slowdown is most severe\\n- Whether performance varies by time of day or user load\\n- Sample API calls that are hitting the 429 rate limit\\n\\nWe will have someone from our infrastructure team reach out to schedule a call this week to discuss findings and next steps.\\n\\nThank you for your patience.\",\"confidence\":\"high\"}"
+    },
+    {
+      "case_id": 14,
+      "category": "complex",
+      "pass": true,
+      "classification": {
+        "priority": "P2",
+        "entities": {
+          "product": null,
+          "version": "2.4.1",
+          "error_codes": [
+            "500",
+            "SYNC_FAILED"
+          ],
+          "affected_users": "30"
+        },
+        "response": "Thank you for reporting this issue. We acknowledge that the /api/v2/users/sync endpoint is returning HTTP 500 with a SYNC_FAILED error when syncing users with special characters in their names (such as O'Brien and García), affecting approximately 30 users in your HR integration.\n\nThis is a defect in the API and our engineering team is investigating it now. We are prioritizing this because it is blocking your user synchronization workflow.\n\nTo help us resolve this faster, could you please provide:\n\n1. A few example names that trigger the error (you've given us O'Brien and García, which is helpful).\n2. How often you attempt the sync and whether retrying the sync request has any effect.\n3. Whether the sync fails completely or partially (do some users sync successfully while others fail).\n\nWe will update you as soon as we have more information."
+      },
+      "failures": {},
+      "judge_reason": null,
+      "raw_output": "{\"priority\":\"P2\",\"entities\":{\"product\":null,\"version\":\"2.4.1\",\"error_codes\":[\"500\",\"SYNC_FAILED\"],\"affected_users\":\"30\"},\"response\":\"Thank you for reporting this issue. We acknowledge that the /api/v2/users/sync endpoint is returning HTTP 500 with a SYNC_FAILED error when syncing users with special characters in their names (such as O'Brien and García), affecting approximately 30 users in your HR integration.\\n\\nThis is a defect in the API and our engineering team is investigating it now. We are prioritizing this because it is blocking your user synchronization workflow.\\n\\nTo help us resolve this faster, could you please provide:\\n\\n1. A few example names that trigger the error (you've given us O'Brien and García, which is helpful).\\n2. How often you attempt the sync and whether retrying the sync request has any effect.\\n3. Whether the sync fails completely or partially (do some users sync successfully while others fail).\\n\\nWe will update you as soon as we have more information.\",\"confidence\":\"high\"}"
+    },
+    {
+      "case_id": 15,
+      "category": "complex",
+      "pass": true,
+      "classification": {
+        "priority": "P2",
+        "entities": {
+          "product": "Analytics Pro",
+          "version": "4.2",
+          "error_codes": [
+            "upgrade required"
+          ],
+          "affected_users": "8"
+        },
+        "response": "Thank you for reporting this issue. We understand this is frustrating—your data team purchased Analytics Pro and should have access to all Pro features, but you're seeing Advanced cohort analysis unavailable, the Custom funnel builder showing \"upgrade required\", and the /account endpoint returning \"analytics_basic\" instead of your actual plan. These symptoms suggest a provisioning error on our end.\n\nOur engineering team is investigating this now. To help us resolve it quickly, please provide:\n\n1. The email address or account ID associated with your Analytics Pro subscription\n2. Approximately when you purchased or upgraded to Pro\n3. Whether this issue started immediately after purchase or appeared later\n4. Any error messages or logs from your API calls to the /account endpoint\n\nWe'll prioritize getting your team full Pro access restored."
+      },
+      "failures": {},
+      "judge_reason": null,
+      "raw_output": "{\"priority\":\"P2\",\"entities\":{\"product\":\"Analytics Pro\",\"version\":\"4.2\",\"error_codes\":[\"upgrade required\"],\"affected_users\":\"8\"},\"response\":\"Thank you for reporting this issue. We understand this is frustrating—your data team purchased Analytics Pro and should have access to all Pro features, but you're seeing Advanced cohort analysis unavailable, the Custom funnel builder showing \\\"upgrade required\\\", and the /account endpoint returning \\\"analytics_basic\\\" instead of your actual plan. These symptoms suggest a provisioning error on our end.\\n\\nOur engineering team is investigating this now. To help us resolve it quickly, please provide:\\n\\n1. The email address or account ID associated with your Analytics Pro subscription\\n2. Approximately when you purchased or upgraded to Pro\\n3. Whether this issue started immediately after purchase or appeared later\\n4. Any error messages or logs from your API calls to the /account endpoint\\n\\nWe'll prioritize getting your team full Pro access restored.\",\"confidence\":\"high\"}"
+    },
+    {
+      "case_id": 16,
+      "category": "complex",
+      "pass": true,
+      "classification": {
+        "priority": "P2",
+        "entities": {
+          "product": null,
+          "version": "3.1",
+          "error_codes": [],
+          "affected_users": "25"
+        },
+        "response": "Thank you for the follow-up. I understand that the hourly syncs are now running, but the fix has introduced a new issue: duplicate records are being created on each sync cycle. This is a serious data quality problem that needs investigation.\n\nI am escalating this to the engineering team immediately. They will review whether the deduplication logic was properly included in the patch deployed last week and diagnose why duplicates are appearing despite the fix.\n\nTo help with the investigation, can you please provide:\n- The exact product or module name where duplicates are appearing\n- A specific example of a duplicated record (if possible without sharing sensitive data)\n- Approximately how many duplicate records have been created since the patch was deployed\n- Whether this occurs across all 25 affected users or specific ones\n\nWe will prioritize this and follow up as soon as we have more information."
+      },
+      "failures": {},
+      "judge_reason": null,
+      "raw_output": "{\"priority\":\"P2\",\"entities\":{\"product\":null,\"version\":\"3.1\",\"error_codes\":[],\"affected_users\":\"25\"},\"response\":\"Thank you for the follow-up. I understand that the hourly syncs are now running, but the fix has introduced a new issue: duplicate records are being created on each sync cycle. This is a serious data quality problem that needs investigation.\\n\\nI am escalating this to the engineering team immediately. They will review whether the deduplication logic was properly included in the patch deployed last week and diagnose why duplicates are appearing despite the fix.\\n\\nTo help with the investigation, can you please provide:\\n- The exact product or module name where duplicates are appearing\\n- A specific example of a duplicated record (if possible without sharing sensitive data)\\n- Approximately how many duplicate records have been created since the patch was deployed\\n- Whether this occurs across all 25 affected users or specific ones\\n\\nWe will prioritize this and follow up as soon as we have more information.\",\"confidence\":\"high\"}"
+    },
+    {
+      "case_id": 17,
+      "category": "complex",
+      "pass": true,
+      "classification": {
+        "priority": "P1",
+        "entities": {
+          "product": null,
+          "version": null,
+          "error_codes": [],
+          "affected_users": "150"
+        },
+        "response": "Thank you for reporting this issue. We understand the severity: your system crashed during end-of-quarter processing, reports have been lost, and 150 people are blocked from their work. This is a critical incident.\n\nWe are escalating this immediately to our on-call engineering team for emergency investigation and recovery. To help us act as quickly as possible, please provide:\n\n1. Which product or module were you using when the crash occurred?\n2. Approximate time of the crash (date and time, with timezone).\n3. Any error messages or codes displayed before or during the crash.\n4. Exact names or identifiers of the reports that are now missing.\n5. When was the last successful backup or export you have on record?\n\nOur team will contact you within the hour with an update. If you have not heard from us, please reply to this ticket or contact your account manager immediately."
+      },
+      "failures": {},
+      "judge_reason": "PASS - Response appropriately matches the P1 priority by escalating immediately to engineering, acknowledges all critical impacts mentioned, maintains professional tone despite aggressive ticket language, and requests necessary information for emergency recovery.",
+      "raw_output": "{\"priority\":\"P1\",\"entities\":{\"product\":null,\"version\":null,\"error_codes\":[],\"affected_users\":\"150\"},\"response\":\"Thank you for reporting this issue. We understand the severity: your system crashed during end-of-quarter processing, reports have been lost, and 150 people are blocked from their work. This is a critical incident.\\n\\nWe are escalating this immediately to our on-call engineering team for emergency investigation and recovery. To help us act as quickly as possible, please provide:\\n\\n1. Which product or module were you using when the crash occurred?\\n2. Approximate time of the crash (date and time, with timezone).\\n3. Any error messages or codes displayed before or during the crash.\\n4. Exact names or identifiers of the reports that are now missing.\\n5. When was the last successful backup or export you have on record?\\n\\nOur team will contact you within the hour with an update. If you have not heard from us, please reply to this ticket or contact your account manager immediately.\",\"confidence\":\"high\"}"
+    },
+    {
+      "case_id": 18,
+      "category": "complex",
+      "pass": true,
+      "classification": {
+        "priority": "P3",
+        "entities": {
+          "product": null,
+          "version": null,
+          "error_codes": [],
+          "affected_users": null
+        },
+        "response": "Thank you for reaching out. To help you quickly, I need a few details:\n\n1. Which product or module are you using?\n2. What specific behavior are you seeing, or what error message appears?\n3. When did this start happening?\n4. How many users are affected?\n5. Can you share the steps to reproduce the issue?\n\nOnce I have these details, I'll be able to investigate and get you a resolution."
+      },
+      "failures": {},
+      "judge_reason": null,
+      "raw_output": "{\"priority\":\"P3\",\"entities\":{\"product\":null,\"version\":null,\"error_codes\":[],\"affected_users\":null},\"response\":\"Thank you for reaching out. To help you quickly, I need a few details:\\n\\n1. Which product or module are you using?\\n2. What specific behavior are you seeing, or what error message appears?\\n3. When did this start happening?\\n4. How many users are affected?\\n5. Can you share the steps to reproduce the issue?\\n\\nOnce I have these details, I'll be able to investigate and get you a resolution.\",\"confidence\":\"low\"}"
+    },
+    {
+      "case_id": 19,
+      "category": "complex",
+      "pass": true,
+      "classification": {
+        "priority": "P1",
+        "entities": {
+          "product": "UserVault",
+          "version": "9.1.0",
+          "error_codes": [],
+          "affected_users": null
+        },
+        "response": "Thank you for reporting this security issue. We take unauthorized exposure of personal data extremely seriously. You have identified a potential privacy breach in the account settings page where other users' PII (full name, email address, and phone number) may be visible when navigating between tabs on the Profile section. This is a critical security concern that affects the confidentiality of user data across the platform.\n\nWe are escalating this immediately to our on-call security and engineering teams for urgent investigation and remediation. Please do not attempt to further reproduce or exploit this issue, and please keep the details of this discovery confidential.\n\nTo help us resolve this as quickly as possible, can you provide:\n- The exact steps you used to reproduce the issue (which specific tabs and how rapidly you clicked)?\n- A screenshot or description of the data that was exposed?\n- The approximate date and time you first discovered this?\n\nWe will treat this with the highest priority and will follow up with you as soon as we have an update."
+      },
+      "failures": {},
+      "judge_reason": "PASS - Response appropriately treats the report as a critical security issue consistent with P1 priority, acknowledges all details mentioned in the ticket, requests necessary information for investigation, and sets proper expectations for urgent handling.",
+      "raw_output": "{\"priority\":\"P1\",\"entities\":{\"product\":\"UserVault\",\"version\":\"9.1.0\",\"error_codes\":[],\"affected_users\":null},\"response\":\"Thank you for reporting this security issue. We take unauthorized exposure of personal data extremely seriously. You have identified a potential privacy breach in the account settings page where other users' PII (full name, email address, and phone number) may be visible when navigating between tabs on the Profile section. This is a critical security concern that affects the confidentiality of user data across the platform.\\n\\nWe are escalating this immediately to our on-call security and engineering teams for urgent investigation and remediation. Please do not attempt to further reproduce or exploit this issue, and please keep the details of this discovery confidential.\\n\\nTo help us resolve this as quickly as possible, can you provide:\\n- The exact steps you used to reproduce the issue (which specific tabs and how rapidly you clicked)?\\n- A screenshot or description of the data that was exposed?\\n- The approximate date and time you first discovered this?\\n\\nWe will treat this with the highest priority and will follow up with you as soon as we have an update.\",\"confidence\":\"high\"}"
+    },
+    {
+      "case_id": 20,
+      "category": "non_native",
+      "pass": true,
+      "classification": {
+        "priority": "P2",
+        "entities": {
+          "product": "Ñoño Analytics",
+          "version": "5.4.2",
+          "error_codes": [
+            "VIZ-RENDER-408"
+          ],
+          "affected_users": "15"
+        },
+        "response": "Thank you for reporting this issue, José. We understand that the Ñoño Analytics dashboard chart widgets are not rendering since Thursday's update to version 5.4.2, and that your analytics team of 15 people cannot access the visualizations they need for daily reporting—even though the underlying data tables load correctly. The error code VIZ-RENDER-408 is a clear indicator of the problem.\n\nThis is a significant issue for your team's operations. Our engineering team is being engaged to investigate the root cause of the rendering failure introduced in 5.4.2. In the meantime, can you confirm a few details to help us troubleshoot faster:\n\n1. Are there any browser console errors (F12 > Console tab) when the spinner appears, in addition to the VIZ-RENDER-408 code?\n2. Does the issue occur for all dashboard types, or only specific chart widget types (bar, line, pie, etc.)?\n3. Are you able to export the underlying data tables as a temporary workaround for your reporting needs?\n\nWe will prioritize this investigation and update you as soon as we have more information."
+      },
+      "failures": {},
+      "judge_reason": null,
+      "raw_output": "{\"priority\":\"P2\",\"entities\":{\"product\":\"Ñoño Analytics\",\"version\":\"5.4.2\",\"error_codes\":[\"VIZ-RENDER-408\"],\"affected_users\":\"15\"},\"response\":\"Thank you for reporting this issue, José. We understand that the Ñoño Analytics dashboard chart widgets are not rendering since Thursday's update to version 5.4.2, and that your analytics team of 15 people cannot access the visualizations they need for daily reporting—even though the underlying data tables load correctly. The error code VIZ-RENDER-408 is a clear indicator of the problem.\\n\\nThis is a significant issue for your team's operations. Our engineering team is being engaged to investigate the root cause of the rendering failure introduced in 5.4.2. In the meantime, can you confirm a few details to help us troubleshoot faster:\\n\\n1. Are there any browser console errors (F12 > Console tab) when the spinner appears, in addition to the VIZ-RENDER-408 code?\\n2. Does the issue occur for all dashboard types, or only specific chart widget types (bar, line, pie, etc.)?\\n3. Are you able to export the underlying data tables as a temporary workaround for your reporting needs?\\n\\nWe will prioritize this investigation and update you as soon as we have more information.\",\"confidence\":\"high\"}"
+    },
+    {
+      "case_id": 21,
+      "category": "vague",
+      "pass": true,
+      "classification": {
+        "priority": "P3",
+        "entities": {
+          "product": "report builder",
+          "version": null,
+          "error_codes": [],
+          "affected_users": null
+        },
+        "response": "Thank you for reporting this issue with the report builder. We understand that slow report generation and occasional timeouts are frustrating, especially when it affects your team's workflow. We appreciate you flagging that retrying eventually succeeds—that context helps us understand the scope.\n\nWe will look into this and investigate what may be causing the intermittent slowness and timeout behavior. To help us troubleshoot more effectively, could you please provide a few additional details:\n\n1. When did you first notice these issues? (approximate date or timeframe)\n2. Are there specific report types, sizes, or configurations that seem more prone to timing out?\n3. Roughly how many people on your team are experiencing this?\n4. Do you have any error messages or codes that appear when a report times out?\n\nOnce we have these details, our team will investigate and work toward a resolution."
+      },
+      "failures": {},
+      "judge_reason": null,
+      "raw_output": "{\"priority\":\"P3\",\"entities\":{\"product\":\"report builder\",\"version\":null,\"error_codes\":[],\"affected_users\":null},\"response\":\"Thank you for reporting this issue with the report builder. We understand that slow report generation and occasional timeouts are frustrating, especially when it affects your team's workflow. We appreciate you flagging that retrying eventually succeeds—that context helps us understand the scope.\\n\\nWe will look into this and investigate what may be causing the intermittent slowness and timeout behavior. To help us troubleshoot more effectively, could you please provide a few additional details:\\n\\n1. When did you first notice these issues? (approximate date or timeframe)\\n2. Are there specific report types, sizes, or configurations that seem more prone to timing out?\\n3. Roughly how many people on your team are experiencing this?\\n4. Do you have any error messages or codes that appear when a report times out?\\n\\nOnce we have these details, our team will investigate and work toward a resolution.\",\"confidence\":\"medium\"}"
+    }
+  ]
+}

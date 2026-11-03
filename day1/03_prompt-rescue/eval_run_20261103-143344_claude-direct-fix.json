@@ -1,0 +1,412 @@
+{
+  "run_id": "20261103-143344_claude-direct-fix",
+  "timestamp": "2026-11-03T14:33:44",
+  "label": "Claude direct fix",
+  "model": "claude-haiku-4-5",
+  "mode": "single prompt",
+  "prompts": [
+    "\n[Paste Claude's direct rewrite here]\n"
+  ],
+  "score": {
+    "passed": 0,
+    "total": 21,
+    "pct": 0
+  },
+  "elapsed_s": 96.9,
+  "categories": {
+    "clean": {
+      "label": "Clean inputs",
+      "passed": 0,
+      "total": 4
+    },
+    "multi_issue": {
+      "label": "Multi-issue",
+      "passed": 0,
+      "total": 2
+    },
+    "vague": {
+      "label": "Vague/unclear",
+      "passed": 0,
+      "total": 3
+    },
+    "non_native": {
+      "label": "Non-native English",
+      "passed": 0,
+      "total": 3
+    },
+    "feature_request": {
+      "label": "Feature requests",
+      "passed": 0,
+      "total": 2
+    },
+    "complex": {
+      "label": "Complex/long/edge",
+      "passed": 0,
+      "total": 7
+    }
+  },
+  "cases": [
+    {
+      "case_id": 1,
+      "category": "clean",
+      "pass": false,
+      "classification": {
+        "priority": null,
+        "entities": null,
+        "response": null
+      },
+      "failures": {
+        "json_valid": "Output is not valid JSON",
+        "priority_correct": "Skipped -- invalid JSON",
+        "entities_accurate": "Skipped -- invalid JSON"
+      },
+      "judge_reason": null,
+      "raw_output": "# Error 503 on Login Page - Immediate Response\n\nThank you for reporting this critical issue. I understand this is blocking your entire sales team's access to your primary CRM. Let me help you resolve this quickly.\n\n## Immediate Troubleshooting Steps\n\n**For your team (while we investigate):**\n1. **Clear browser cache** - Have users clear cookies and cached data for your CRM domain, then try incognito/private browsing\n2. **Try alternate access** - If available, attempt login via mobile app or different network (to isolate network/firewall issues)\n3. **Check status page** - Visit your CRM provider's status page for any posted incidents\n\n**For your IT team:**\n1. **Verify network connectivity** - Confirm your organization's outbound connections to the authentication servers aren't blocked\n2. **Check firewall/proxy logs** - Look for blocked requests to auth endpoints around 2pm EST\n3. **Review recent changes** - Any network, security, or DNS changes deployed today?\n\n## Information Needed to Escalate\n\nTo investigate the **SVC-503-AUTH** error code effectively, please provide:\n\n- [ ] Error logs from your platform (if accessible from admin console)\n- [ ] Approximate time error started (confirmed as 2pm EST?)\n- [ ] Number of affected users vs. total users\n- [ ] Whether *any* users can log in successfully\n- [ ] Recent system changes (updates, security patches, config changes)\n- [ ] Your organization's region/data center\n- [ ] Whether this affects all login methods or specific ones (SSO, username/password, MFA)?\n\n## Next Steps\n\n1. **If you have vendor support:** Contact them with error code SVC-503-AUTH and timeline - 500 concurrent users blocked is likely escalated internally already\n2. **Monitor your status page** - Check for updates every 15 minutes\n3. **Reply with the information above** - I can help escalate or investigate further\n\nWhat's your current vendor support contact status?"
+    },
+    {
+      "case_id": 2,
+      "category": "clean",
+      "pass": false,
+      "classification": {
+        "priority": null,
+        "entities": null,
+        "response": null
+      },
+      "failures": {
+        "json_valid": "Output is not valid JSON",
+        "priority_correct": "Skipped -- invalid JSON",
+        "entities_accurate": "Skipped -- invalid JSON"
+      },
+      "judge_reason": null,
+      "raw_output": "# Search Function Returning Wrong Results – Support Response\n\n## Issue Summary\nThe search feature in the inventory management module is returning incorrect results for product SKU queries since the 2.8.0 update. This is impacting warehouse operations for 45 users.\n\n---\n\n## Immediate Troubleshooting Steps\n\n### 1. **Clear Search Index**\n   - Navigate to **Admin > Maintenance > Search Index**\n   - Click **Rebuild Index**\n   - Allow 5-10 minutes to complete (depending on inventory size)\n   - Test search with a known SKU\n\n### 2. **Verify Search Settings**\n   - Check **Admin > Settings > Search Configuration**\n   - Confirm the correct fields are indexed (SKU, product name, etc.)\n   - Compare settings to your pre-update backup if available\n\n### 3. **Test with Specific Examples**\n   - Search for a SKU you know exists (e.g., \"ABC123\")\n   - Note what results appear instead\n   - Try searching by product name to see if that field works correctly\n\n### 4. **Check Recent Data Changes**\n   - Were any products added/modified yesterday or today?\n   - Were any custom fields or categories recently modified?\n\n---\n\n## Likely Causes\n- **Search index corruption** during update (most common)\n- **Field mapping changes** in 2.8.0 affecting SKU recognition\n- **Database query logic change** in the new version\n\n---\n\n## Next Steps\n\nPlease provide:\n1. **Screenshot** of incorrect search results (what you search for vs. what appears)\n2. **Confirmation** whether index rebuild resolved the issue\n3. **Database type** (SQL Server, PostgreSQL, MySQL)\n4. **Whether** you have a pre-update backup available\n\nIf the index rebuild doesn't resolve this, this may require a hotfix. We have a 2.8.1 patch in testing that addressed search-related issues.\n\n---\n\n**Severity:** High (operational impact)  \n**Next Response Target:** Within 4 hours"
+    },
+    {
+      "case_id": 3,
+      "category": "clean",
+      "pass": false,
+      "classification": {
+        "priority": null,
+        "entities": null,
+        "response": null
+      },
+      "failures": {
+        "json_valid": "Output is not valid JSON",
+        "priority_correct": "Skipped -- invalid JSON",
+        "entities_accurate": "Skipped -- invalid JSON"
+      },
+      "judge_reason": null,
+      "raw_output": "# Tooltip Text Cut Off on Settings Page\n\n**Severity:** Low  \n**Affected Users:** Admins only  \n**Impact:** UX/Documentation clarity  \n**Version:** 5.0.1\n\n## Issue Description\nThe tooltip text for the \"Data Retention Policy\" field on the admin settings page is truncated when admins hover over it. The tooltip displays \"Data will be retained for...\" and then cuts off, preventing users from reading the complete text.\n\n## Current Behavior\n- Tooltip appears on hover over the \"Data Retention Policy\" field\n- Text truncates mid-sentence\n- Only visible to admin users with settings page access\n\n## Steps to Reproduce\n1. Log in as an admin user\n2. Navigate to Admin Settings page\n3. Locate the \"Data Retention Policy\" field\n4. Hover over the tooltip icon\n5. Observe truncated text\n\n## Context\n- Discovered during admin training session with new team members\n- Does not block any functionality\n- Non-critical issue\n\n## Notes\nThis may affect admin understanding of the retention policy configuration during setup or training scenarios."
+    },
+    {
+      "case_id": 4,
+      "category": "clean",
+      "pass": false,
+      "classification": {
+        "priority": null,
+        "entities": null,
+        "response": null
+      },
+      "failures": {
+        "json_valid": "Output is not valid JSON",
+        "priority_correct": "Skipped -- invalid JSON",
+        "entities_accurate": "Skipped -- invalid JSON"
+      },
+      "judge_reason": null,
+      "raw_output": "# Summary\n\nYou're requesting a bulk PDF export feature to streamline your workflow. Instead of exporting reports individually, you'd like to select multiple reports at once and export them together.\n\n## What you're asking for\n\n- **\"Select All\" checkbox** to quickly choose multiple reports\n- **\"Export Selected to PDF\" button** to process them in one action\n- This would save your analytics team significant time on a regular task\n\n## Key details\n\n- **Team size affected:** 8 people\n- **Current friction:** Each report requires a separate export action\n- **Use frequency:** Regular/ongoing need\n\n## Feedback\n\nThis is solid feature request. A few thoughts that might strengthen it:\n\n1. **Volume context** — How many reports does a typical bulk export involve? (5 reports vs. 50 reports changes the complexity/impact)\n\n2. **Output preference** — Would you prefer:\n   - One PDF per report (8 files)?\n   - All reports combined into a single PDF?\n   - An option for either?\n\n3. **Scheduling angle** — Would an automated/scheduled export option be useful, or is manual bulk export sufficient?\n\n4. **File naming** — How should multiple PDFs be named/organized to avoid confusion?\n\nThese details would help the product team scope and prioritize this work."
+    },
+    {
+      "case_id": 5,
+      "category": "multi_issue",
+      "pass": false,
+      "classification": {
+        "priority": null,
+        "entities": null,
+        "response": null
+      },
+      "failures": {
+        "json_valid": "Output is not valid JSON",
+        "priority_correct": "Skipped -- invalid JSON",
+        "entities_accurate": "Skipped -- invalid JSON",
+        "response_coherent": "Skipped -- invalid JSON"
+      },
+      "judge_reason": null,
+      "raw_output": "# Triage & Action Plan\n\n## Immediate Priority Assessment\n\n**CRITICAL (fix first):**\n- **Billing miscalculation** — blocks payroll processing for 3 people, but has hard Friday deadline and financial/compliance implications\n- **CSV export 500 error** — affects 200 users' workflows, though likely has workarounds\n\n## Suggested Next Steps (Next 30 min)\n\n**For Billing:**\n1. **Isolate the scope** — What changed Tuesday? (deploy, data migration, config change?)\n2. **Quick wins:**\n   - Check for recent database/calculation logic changes\n   - Verify any scheduled jobs or cronjobs that run Tuesdays\n   - Look at error logs for that timeframe\n3. **Parallel path:** Have finance manually verify a few transactions while you investigate — might reveal the pattern faster\n\n**For CSV Export:**\n1. **Logs first** — Pull server logs around when errors started; 500 errors usually have stack traces\n2. **Test the flow** — Try exporting a small dataset yourself to reproduce\n3. **Check dependencies** — Any recent updates to libraries, file storage, or services it relies on?\n\n## Longer-term (for this week)\n\n- **Billing:** If root cause isn't obvious in 1 hour, consider a rollback to Tuesday AM + reapplying safe changes incrementally\n- **Export:** Offer temporary JSON export or direct database query for Friday's reporting while you fix the CSV pipeline\n\n---\n\n**What was the last deployment/change before Tuesday?** That's usually where these simultaneous issues originate. Happy to help dig deeper with more context."
+    },
+    {
+      "case_id": 6,
+      "category": "multi_issue",
+      "pass": false,
+      "classification": {
+        "priority": null,
+        "entities": null,
+        "response": null
+      },
+      "failures": {
+        "json_valid": "Output is not valid JSON",
+        "priority_correct": "Skipped -- invalid JSON",
+        "entities_accurate": "Skipped -- invalid JSON"
+      },
+      "judge_reason": null,
+      "raw_output": "# Response to Dashboard Issues\n\nHi,\n\nThanks for reaching out. I'm treating these as two separate items since they have different urgency levels:\n\n## 1. Stale Data Issue (Priority: High)\n\nThis needs immediate attention. A 3-day data lag directly impacts your ops team's ability to plan shifts effectively.\n\n**To help us diagnose:**\n- Can you confirm the dashboard still loads without errors?\n- Are you seeing the same stale timestamp, or does it update but show old data?\n- Have there been any system changes, deployments, or data pipeline updates since Monday?\n\n**In the meantime:**\n- Check if manually refreshing the page clears it\n- Verify your data source connection is active\n\nI'd like to get this resolved today. Can you provide those details, or would a quick call work better to troubleshoot?\n\n## 2. Dark Mode Feature Request\n\nThis is great feedback—I'm logging this as a feature request. We've had a few requests for this, so I'll add your team's use case (shift planning + extended viewing) to help prioritize it against other work.\n\nPlease let me know on the #1 issue so we can get your team back to normal operations quickly.\n\nBest,\n[Your name]\n\n---\n\n**Why this structure works:** It signals \"urgent\" vs. \"nice-to-have\" without dismissing either concern, asks clarifying questions to unblock the real problem, and commits to action on both fronts."
+    },
+    {
+      "case_id": 7,
+      "category": "vague",
+      "pass": false,
+      "classification": {
+        "priority": null,
+        "entities": null,
+        "response": null
+      },
+      "failures": {
+        "json_valid": "Output is not valid JSON",
+        "priority_correct": "Skipped -- invalid JSON",
+        "entities_accurate": "Skipped -- invalid JSON"
+      },
+      "judge_reason": null,
+      "raw_output": "# Subject: Performance Issues and Errors Since This Morning\n\nHi,\n\nThanks for reaching out. I'm sorry you're experiencing slowness and errors. To help troubleshoot this, I need a bit more detail:\n\n**Quick questions:**\n- Which pages are loading slowly? (specific URLs or features)\n- What errors are you seeing? (error messages, blank screens, etc.)\n- Are you able to access the site at all, or is it completely down?\n- Is this happening on all devices/browsers, or just one?\n\n**In the meantime, you could try:**\n- Clearing your browser cache and cookies\n- Trying a different browser or incognito/private window\n- Checking your internet connection speed\n\nOnce you share those details, I can investigate on our end. We may be experiencing temporary server issues this morning, and I want to pinpoint what's affecting you specifically.\n\nThanks,\n[Your name]\n\n---\n\n**Note:** If this is urgent and affecting multiple users, consider also posting an update to your status page and alerting your team immediately."
+    },
+    {
+      "case_id": 8,
+      "category": "vague",
+      "pass": false,
+      "classification": {
+        "priority": null,
+        "entities": null,
+        "response": null
+      },
+      "failures": {
+        "json_valid": "Output is not valid JSON",
+        "priority_correct": "Skipped -- invalid JSON",
+        "entities_accurate": "Skipped -- invalid JSON",
+        "response_coherent": "Skipped -- invalid JSON"
+      },
+      "judge_reason": null,
+      "raw_output": "# Response Strategy\n\nThis is a concerned, long-term customer at risk of leaving. The vague complaints (\"things don't feel right\") suggest either:\n- Multiple small issues adding up\n- A recent specific incident they haven't articulated clearly\n- Broader disappointment with direction/changes\n\n**Tone needed:** Take them seriously, be specific, show you value them, and diagnose the real problem.\n\n---\n\n# Suggested Response\n\nSubject: Let's fix this – I want to understand what's changed for you\n\nThank you for being direct, and I'm genuinely sorry to hear this. Three years is a meaningful relationship, and if we've let you down, that matters.\n\nYour message tells me something's shifted, but I want to make sure I understand what specifically. \"Things don't feel right\" could mean different things, so I'd like to ask:\n\n- **Was there a particular moment or change** that triggered this, or has it been a gradual drift?\n- **What are your team experiencing most directly?** (e.g., product changes, support responsiveness, pricing, features, reliability)\n- **What would \"right\" look like again?**\n\nI'm not asking to dismiss your concerns—I'm asking because I want to actually fix the problem, not just promise to. If it's something we've changed recently, I should know about it. If it's something we've missed building, that's valuable feedback.\n\nI'd also like to suggest a brief call this week if you're open to it. Sometimes these conversations are clearer voice-to-voice, and it lets me loop in whoever needs to be involved to help.\n\nYou have options, and I respect that. But before you make a move, I'd rather spend 20 minutes understanding what went wrong.\n\nWhen works for you?\n\n[Your name]\n\n---\n\n**Why this works:** Acknowledges their tenure, treats the complaint as real (not defensive), asks clarifying questions to uncover the actual issue, and takes accountability while offering concrete next steps."
+    },
+    {
+      "case_id": 9,
+      "category": "non_native",
+      "pass": false,
+      "classification": {
+        "priority": null,
+        "entities": null,
+        "response": null
+      },
+      "failures": {
+        "json_valid": "Output is not valid JSON",
+        "priority_correct": "Skipped -- invalid JSON",
+        "entities_accurate": "Skipped -- invalid JSON"
+      },
+      "judge_reason": null,
+      "raw_output": "# API Integration Issues - Version 3.2\n\nThank you for reaching out. I understand this is urgent given the production impact on your 50 customers. Let me help you troubleshoot this quickly.\n\n## Immediate Information Needed\n\nTo diagnose the webhook and data issues, please provide:\n\n1. **Error Details**\n   - Full error message and stack trace\n   - Approximate time errors started occurring\n   - Frequency of timeout errors (% of requests)\n\n2. **System Information**\n   - Current version number (exact build)\n   - Previous version you were running\n   - Your hosting environment (cloud provider, server specs)\n\n3. **Webhook Configuration**\n   - Webhook endpoint URL\n   - Current timeout setting\n   - Any recent changes to network/firewall rules\n\n4. **Dashboard Data**\n   - Which specific data is missing?\n   - When did data last sync successfully?\n   - Any pattern to what's missing?\n\n## Likely Causes & Quick Checks\n\nWhile you gather that info, try these:\n\n- **Check webhook logs** in your integration dashboard for failed delivery attempts\n- **Verify API credentials** haven't expired or been rotated\n- **Review rate limits** - version 3.2 may have different thresholds\n- **Test connectivity** with a simple API call to confirm basic connectivity\n\n## Next Steps\n\n1. Reply with the information above\n2. I'll escalate to our engineering team for priority review\n3. We may need temporary workarounds while your case is investigated\n\nCan you provide those details? In the meantime, I'm flagging this as P1 (production-critical)."
+    },
+    {
+      "case_id": 10,
+      "category": "non_native",
+      "pass": false,
+      "classification": {
+        "priority": null,
+        "entities": null,
+        "response": null
+      },
+      "failures": {
+        "json_valid": "Output is not valid JSON",
+        "priority_correct": "Skipped -- invalid JSON",
+        "entities_accurate": "Skipped -- invalid JSON"
+      },
+      "judge_reason": null,
+      "raw_output": "# Response to System Issue Report\n\nGood day,\n\nThank you for reporting this issue. Your English is perfectly clear—no need to apologize! Here's what would help us investigate:\n\n## Questions to help us troubleshoot:\n\n1. **Browser information:**\n   - Which browser are you using? (Chrome, Firefox, Safari, Edge, etc.)\n   - What version?\n   - Does the issue occur in other browsers?\n\n2. **Report button details:**\n   - Which specific report button isn't working?\n   - What happens when you click it? (nothing, error message, page freeze?)\n   - Do you see any errors on the screen?\n\n3. **When it happens:**\n   - Is there a pattern? (time of day, after certain actions, with specific reports?)\n   - Can you make the problem happen again, or is it random?\n\n4. **System version:**\n   - You mentioned version 2.1—could you confirm this from Settings or About?\n\n5. **Affected users:**\n   - Are the 3 affected users using the same browser?\n   - Same computer setup?\n\n## Suggestions to try now:\n\n- Clear browser cache and cookies\n- Try a different browser\n- Restart your computer\n- Check if your browser is up to date\n\nPlease reply with this information, and we'll be able to help you much faster.\n\nBest regards"
+    },
+    {
+      "case_id": 11,
+      "category": "feature_request",
+      "pass": false,
+      "classification": {
+        "priority": null,
+        "entities": null,
+        "response": null
+      },
+      "failures": {
+        "json_valid": "Output is not valid JSON",
+        "priority_correct": "Skipped -- invalid JSON",
+        "entities_accurate": "Skipped -- invalid JSON",
+        "response_coherent": "Skipped -- invalid JSON"
+      },
+      "judge_reason": null,
+      "raw_output": "I understand this is genuinely urgent for your organization. Let me help you find the right path forward.\n\n**Immediate steps I'd recommend:**\n\n1. **Escalate through proper channels** – Contact your account manager or support lead directly (not just email). Request an emergency call with the product team. Mention the timeline and compliance requirement specifically.\n\n2. **Document the requirement formally** – Send a written request that includes:\n   - Your compliance framework (SOC2, ISO 27001, etc.)\n   - Why SAML is mandatory (not just preferred)\n   - Your user count and deployment timeline\n   - Decision deadline\n\n3. **Explore interim options** while permanent SSO is being evaluated:\n   - SCIM user provisioning (reduces manual overhead)\n   - API-based authentication if available\n   - Temporary workarounds your CISO might accept\n   - Whether other platforms you're considering actually have this implemented vs. roadmap\n\n4. **Get clarity on current status** – Ask directly:\n   - Is SAML on the product roadmap? (When?)\n   - Are other enterprise customers requesting this?\n   - Could this be a custom integration option?\n\n**Reality check:** If SSO is genuinely non-negotiable and truly unavailable, switching may be the right call—that's legitimate risk management on your part. But before concluding that, make sure you've talked to someone with authority to discuss options, not just standard support responses.\n\nWhat's your current platform, and have you connected with an account executive yet?"
+    },
+    {
+      "case_id": 12,
+      "category": "feature_request",
+      "pass": false,
+      "classification": {
+        "priority": null,
+        "entities": null,
+        "response": null
+      },
+      "failures": {
+        "json_valid": "Output is not valid JSON",
+        "priority_correct": "Skipped -- invalid JSON",
+        "entities_accurate": "Skipped -- invalid JSON"
+      },
+      "judge_reason": null,
+      "raw_output": "# Rewrite\n\nSubject: Feature Request – Calendar View for Task Management\n\nHi,\n\nThank you for using our product. We'd like to suggest a calendar view for the task management module. Currently, tasks are only visible in list format, which makes it difficult for our team of five project managers to visualize deadlines and project timelines at a glance.\n\nA calendar interface would help us:\n- Quickly identify upcoming deadlines\n- Spot scheduling conflicts or bottlenecks\n- Plan resource allocation more effectively\n\nWe recognize this isn't urgent, but we believe it would meaningfully improve our workflow. We're happy to discuss this further or provide additional context if helpful.\n\nThank you for considering this feedback.\n\n---\n\n## What Changed\n\n**Tone:** More professional while remaining friendly and collaborative\n\n**Structure:** Organized the vague preference into specific benefits, making it easier to prioritize\n\n**Clarity:** \n- \"About 5 of us\" → \"team of five project managers\" (clearer scope)\n- Added concrete use cases instead of just saying it would be \"helpful\"\n\n**Professionalism:** Removed casual phrases (\"Love the product,\" \"No rush\") while keeping it warm—this helps ensure the request gets serious consideration rather than deprioritized"
+    },
+    {
+      "case_id": 13,
+      "category": "complex",
+      "pass": false,
+      "classification": {
+        "priority": null,
+        "entities": null,
+        "response": null
+      },
+      "failures": {
+        "json_valid": "Output is not valid JSON",
+        "priority_correct": "Skipped -- invalid JSON",
+        "entities_accurate": "Skipped -- invalid JSON"
+      },
+      "judge_reason": null,
+      "raw_output": "# Suggested Response\n\n**Subject: RE: Multiple performance issues after migration to cloud — Immediate Investigation & Call Scheduled**\n\n---\n\nSarah,\n\nThank you for the detailed report and for documenting these issues comprehensively. I understand the urgency—a degradation of this magnitude affecting 85 team members requires immediate attention.\n\nI'm escalating this to our infrastructure team right now and have flagged it as P1. Here's what I'm doing immediately:\n\n**This Week:**\n- **Tomorrow morning:** Our engineering lead will begin diagnostics on your account's infrastructure configuration, database resources, and network routing.\n- **By EOD tomorrow:** I'll send you preliminary findings and schedule a call with you, myself, and our infrastructure team for Thursday at [suggest 2-3 specific times].\n\n**In the meantime, please provide:**\n- Your cloud account/customer ID\n- Approximate timestamps of when you first noticed each issue (helps us correlate with our deployment logs)\n- A sample of affected page load traces (if you have browser dev tools exports)\n- Your current database instance type and connection pool settings\n\n**What I'm investigating:**\nThe specific pattern you're describing—page loads, notifications, uploads, and database queries all degrading together—suggests a potential issue with resource allocation, connection pooling, or regional routing rather than an application code problem. The API rate limiting being stricter is worth examining separately; that *might* indicate traffic spike detection is misconfigured.\n\n**Regarding your SLA:** You're right. If we're outside our guarantees, we need to address that. I want to understand what happened during migration before we discuss remediation, but I'm not dismissing the commitment.\n\nI'll follow up within 24 hours with the diagnostic results and call details.\n\nBest,\n[Your name]\n\n---\n\n**Why this works:**\n- Acknowledges severity and SLA explicitly\n- Provides concrete next steps with timelines\n- Requests specific data to accelerate diagnosis\n- Takes ownership without over-promising\n- Treats the rate-limiting issue as potentially separate (may be intentional defaults needing adjustment)"
+    },
+    {
+      "case_id": 14,
+      "category": "complex",
+      "pass": false,
+      "classification": {
+        "priority": null,
+        "entities": null,
+        "response": null
+      },
+      "failures": {
+        "json_valid": "Output is not valid JSON",
+        "priority_correct": "Skipped -- invalid JSON",
+        "entities_accurate": "Skipped -- invalid JSON"
+      },
+      "judge_reason": null,
+      "raw_output": "# API Endpoint 500 Error - Special Character Handling\n\n## Issue Summary\nThe `/api/v2/users/sync` endpoint is throwing a `NullPointerException` when processing user records containing special characters (accents, apostrophes, etc.). This appears to be a character encoding or null-check issue in the sync service.\n\n## Immediate Workarounds\n\n**Option 1: Normalize names before syncing** (fastest temporary fix)\n- Remove or replace special characters before sending:\n  - `O'Brien` → `OBrien`\n  - `García` → `Garcia`\n- Use a simple regex: `/[^a-zA-Z0-9\\s-]/g` to strip non-ASCII\n\n**Option 2: Update API version**\n- Upgrade to 2.4.2+ (if available) — check your release notes for character encoding fixes\n- This may already be patched\n\n**Option 3: Batch sync without special characters**\n- Temporarily sync the 30 affected users through a different endpoint if available (direct user creation API)\n- Sync remaining users via the sync endpoint\n\n## Diagnostics to Provide Support\n\nTo expedite a fix from your API provider, gather:\n\n```\n1. Exact payload triggering the error:\n   - Include a sample user object with special character\n   - Show full JSON structure for one failing user\n\n2. Character encoding details:\n   - Request header: Content-Type (utf-8?)\n   - Database encoding on API server (UTF-8, Latin-1?)\n\n3. Reproducible test case:\n   - Single user with name: O'Brien\n   - Single user with name: García\n   - Confirm which specific characters fail\n```\n\n## Expected Questions for Your Provider\n\n- Is UserSyncService.java:142 a null-check on the processed name string?\n- Was character encoding changed in v2.4.1?\n- Does the endpoint have input validation/sanitization for non-ASCII characters?\n\n**Trace ID for support ticket:** `abc-123-def-456`\n\nWould you like help structuring a payload test or generating the normalized dataset while waiting for a patch?"
+    },
+    {
+      "case_id": 15,
+      "category": "complex",
+      "pass": false,
+      "classification": {
+        "priority": null,
+        "entities": null,
+        "response": null
+      },
+      "failures": {
+        "json_valid": "Output is not valid JSON",
+        "priority_correct": "Skipped -- invalid JSON",
+        "entities_accurate": "Skipped -- invalid JSON"
+      },
+      "judge_reason": null,
+      "raw_output": "# Response to Analytics Plan Feature Mismatch\n\nThank you for reporting this—I can see why this is frustrating, especially with your team's workflow depending on these Pro features. The combination of issues you've described (missing features + API returning \"analytics_basic\") strongly suggests a provisioning problem on our end rather than a documentation or version issue.\n\n## What I need to investigate\n\nTo resolve this quickly, I'd like to gather a few details:\n\n1. **Confirmation of purchase**: What's your account ID or the email associated with your purchase? Do you have a confirmation/receipt showing the Pro plan purchase date?\n\n2. **Current state verification**: \n   - When you check your account settings in the UI, what plan tier does it display?\n   - Can you provide the response from that `/account` endpoint call (you can redact sensitive data)?\n\n3. **Scope of impact**: Are *all* Pro features blocked, or only specific ones like cohort analysis and funnel builder?\n\n## What I'll do on my end\n\nWhile you gather that info, I'm going to:\n- **Flag this for our provisioning team** immediately—if your account was created as \"analytics_basic\" when it should be \"analytics_pro,\" that's their domain\n- **Check our recent upgrade logs** to see if there was a processing error\n- **Verify the version compatibility** (4.2 should fully support Pro features, but I'll confirm there's no known regression)\n\n## Temporary workaround\n\nIf your team needs these features urgently while we troubleshoot, some Pro capabilities have API-level access even when the UI is blocked. I can provide workaround documentation for the funnel builder and cohort features—not ideal, but it might unblock your team in the short term.\n\n**What's the best email to reach you directly on this?** I'll prioritize it and aim for a resolution within 24 hours."
+    },
+    {
+      "case_id": 16,
+      "category": "complex",
+      "pass": false,
+      "classification": {
+        "priority": null,
+        "entities": null,
+        "response": null
+      },
+      "failures": {
+        "json_valid": "Output is not valid JSON",
+        "priority_correct": "Skipped -- invalid JSON",
+        "entities_accurate": "Skipped -- invalid JSON"
+      },
+      "judge_reason": null,
+      "raw_output": "# Subject: Re: Case #4821 - Follow up on data sync issue\n\nHi,\n\nThank you for the detailed follow-up. I can see how trading one problem for another would be frustrating—let me help get this sorted.\n\n**To investigate the duplicate records issue, I need to:**\n\n1. **Confirm the patch details** — Check whether the deduplication logic was included in last week's deployment for version 3.1\n2. **Review the sync logs** — Pull the hourly sync cycle logs for those 25 users to see where duplicates are being generated\n3. **Identify the root cause** — Determine if this is a logic error in the patch, a configuration issue, or something else\n\n**Can you provide:**\n\n- The exact date the patch was deployed?\n- An example of a duplicated record (ideally with timestamps from both instances)?\n- Whether the duplicates appear consistently in each sync cycle or intermittently?\n\n**In the meantime,** I can escalate this to the development team to do a code review of the deduplication logic in that patch. If the logic was genuinely missed or broken, we can prioritize a hotfix.\n\nI'll follow up within 24 hours with my findings on the patch contents and initial log analysis.\n\nBest regards,"
+    },
+    {
+      "case_id": 17,
+      "category": "complex",
+      "pass": false,
+      "classification": {
+        "priority": null,
+        "entities": null,
+        "response": null
+      },
+      "failures": {
+        "json_valid": "Output is not valid JSON",
+        "priority_correct": "Skipped -- invalid JSON",
+        "entities_accurate": "Skipped -- invalid JSON",
+        "response_coherent": "Skipped -- invalid JSON"
+      },
+      "judge_reason": null,
+      "raw_output": "Subject: RE: System Issue - Immediate Support\n\nThank you for reporting this. I understand you're experiencing a critical system failure during a time-sensitive period, and I want to help resolve this quickly.\n\nTo assist you effectively, I need some specific information:\n\n**Immediate questions:**\n- What time did the crash occur?\n- Which system/module were you using?\n- Do you have backup copies of the reports, or were they only stored in the system?\n- Are you seeing any error messages?\n\n**What I can do right now:**\n- Escalate this to our technical team as a priority issue\n- Check our system logs for what happened during that timeframe\n- Explore data recovery options if files were affected\n- Provide workarounds to get your team operational\n\n**Next steps:**\nI'll contact you within 30 minutes with either a solution or a clear timeline for recovery. Please reply with:\n- Your account/customer number\n- A direct phone number to reach you\n- The names of any reports that were lost\n\nI take this seriously. System failures during critical business processes are unacceptable, and we'll investigate what caused this and how to prevent it. Once we resolve the immediate issue, we should discuss what happened and how to better protect your data going forward.\n\nWhat's the best number to reach you in the next hour?"
+    },
+    {
+      "case_id": 18,
+      "category": "complex",
+      "pass": false,
+      "classification": {
+        "priority": null,
+        "entities": null,
+        "response": null
+      },
+      "failures": {
+        "json_valid": "Output is not valid JSON",
+        "priority_correct": "Skipped -- invalid JSON",
+        "entities_accurate": "Skipped -- invalid JSON"
+      },
+      "judge_reason": null,
+      "raw_output": "I'd be happy to help fix something, but I need a bit more information! Could you tell me:\n\n1. **What's broken?** (a device, software, code, link, etc.)\n2. **What's happening?** (error messages, unexpected behavior, what you expected vs. what's occurring)\n3. **What have you tried so far?** (any troubleshooting steps already taken)\n4. **Any relevant context?** (when it broke, what you were doing, system info, etc.)\n\nWith those details, I can give you much better guidance!"
+    },
+    {
+      "case_id": 19,
+      "category": "complex",
+      "pass": false,
+      "classification": {
+        "priority": null,
+        "entities": null,
+        "response": null
+      },
+      "failures": {
+        "json_valid": "Output is not valid JSON",
+        "priority_correct": "Skipped -- invalid JSON",
+        "entities_accurate": "Skipped -- invalid JSON",
+        "response_coherent": "Skipped -- invalid JSON"
+      },
+      "judge_reason": null,
+      "raw_output": "# Security Report: Potential Data Exposure in Account Settings\n\n## Vulnerability Summary\n\nYou've identified a serious data exposure issue in the settings interface. This warrants immediate investigation and remediation.\n\n## Key Concerns\n\n**Severity indicators:**\n- Personal Identifiable Information (PII) is exposed: full name, email, phone number\n- The vulnerability is easily reproducible without special tools\n- It appears to affect the entire user base\n- No authentication/authorization check appears to be preventing cross-user data access\n- The flaw is subtle enough that users might not notice, but sophisticated enough to be exploited systematically\n\n## Likely Root Causes\n\nThis pattern typically indicates:\n1. **Race condition** — rapid tab switching causes asynchronous requests to overlap, returning data from the wrong user context\n2. **Frontend-only filtering** — PII is loaded into the page for all users, then filtered client-side (easily bypassed)\n3. **Missing authorization checks** — backend returns user data without verifying request ownership\n4. **Session/context confusion** — the application loses track of which user made the request mid-operation\n\n## What to Do Now\n\n**Immediate steps:**\n\n1. **Document the issue thoroughly** (don't share findings publicly):\n   - Exact reproduction steps\n   - Screenshots/video (store securely, don't email)\n   - Which users' data was exposed (if you recorded details)\n   - Confirm version 9.1.0\n\n2. **Report to UserVault's security team directly:**\n   - Use a security@ or security-report@ email if available\n   - If none exists, contact support and mark as \"SECURITY ISSUE — URGENT\"\n   - Include reproduction steps but avoid unnecessarily detailed PII examples\n\n3. **Do not:**\n   - Test on more accounts or attempt to extract larger datasets\n   - Share details with other users or on public forums yet\n   - Access data beyond what's needed to confirm the bug\n\n4. **Suggest immediate vendor actions** in your report:\n   - Patch the authorization/filtering logic\n   - Audit logs for unauthorized data access\n   - Consider notifying affected users depending on exposure scope\n\n## Why This Matters\n\nThis is a **GDPR/CCPA-relevant incident** if the platform handles EU/CA users. The vendor likely has legal obligations to:\n- Fix it promptly\n- Log and investigate access\n- Potentially notify users depending on exposure\n\nYour responsible disclosure now prevents larger exploitation later.\n\n---\n\n**Do you need guidance on crafting the security report email, or do you have questions about the technical explanation?**"
+    },
+    {
+      "case_id": 20,
+      "category": "non_native",
+      "pass": false,
+      "classification": {
+        "priority": null,
+        "entities": null,
+        "response": null
+      },
+      "failures": {
+        "json_valid": "Output is not valid JSON",
+        "priority_correct": "Skipped -- invalid JSON",
+        "entities_accurate": "Skipped -- invalid JSON"
+      },
+      "judge_reason": null,
+      "raw_output": "# Support Response\n\n**Subject: RE: Ñoño Analytics dashboard not loading charts**\n\n---\n\nHi José,\n\nThank you for the detailed report. I understand how critical this is for your analytics team's daily workflows. The VIZ-RENDER-408 error combined with the selective failure (tables loading but charts not rendering) points to a specific issue introduced in 5.4.2.\n\n## Immediate Troubleshooting\n\n1. **Check your deployment logs** for VIZ-RENDER-408 entries around the time of the update\n2. **Verify the charting service** is running:\n   - Check if the visualization microservice restarted properly during the update\n   - Confirm it has adequate memory allocated (we've seen this error when memory is constrained)\n\n3. **Clear application cache** (different from browser cache):\n   - In Ñoño Analytics admin panel, go to **Settings > Cache Management > Clear All**\n   - Then try loading a dashboard in an incognito/private browser window\n\n## Known Issue in 5.4.2\n\nWe've identified a regression in the chart rendering pipeline related to SVG namespace handling that affects some environments. A patch (5.4.2.1) was released yesterday.\n\n**I recommend upgrading to version 5.4.2.1** as your first step—this resolves the issue for most users.\n\n## If the patch doesn't resolve it\n\nPlease provide:\n- Your environment details (cloud/on-prem, browser versions, approximate user count)\n- A screenshot of the VIZ-RENDER-408 error details (click the error message)\n- Browser console errors (F12 → Console tab)\n\nI can escalate to our engineering team with a priority flag given the 15-person team impact.\n\nBest regards,  \n[Support Agent]"
+    },
+    {
+      "case_id": 21,
+      "category": "vague",
+      "pass": false,
+      "classification": {
+        "priority": null,
+        "entities": null,
+        "response": null
+      },
+      "failures": {
+        "json_valid": "Output is not valid JSON",
+        "priority_correct": "Skipped -- invalid JSON",
+        "entities_accurate": "Skipped -- invalid JSON"
+      },
+      "judge_reason": null,
+      "raw_output": "# Rewrite for Clarity and Actionability\n\n**Subject:** Report Builder Performance Issues – Multiple Users Affected\n\nHi support,\n\nI'm reporting performance issues with the report builder that are affecting my team's productivity.\n\n**What's happening:**\n- Reports are taking significantly longer than usual to generate\n- Some reports time out without producing output\n- Retrying usually resolves the issue, but this is inconsistent\n\n**Impact:**\n- Multiple team members are experiencing this\n- I've heard similar complaints from the marketing department (unconfirmed)\n- While not a complete blocker, it's creating workflow delays\n\n**What I need:**\nCould you investigate what might be causing these delays and timeouts? If you need specifics (report types, sizes, timing patterns, error messages), I'm happy to provide more details.\n\nThanks,\n[Your name]\n\n---\n\n## Why this version works better:\n\n1. **Clearer structure** – Uses specific sections so support can quickly assess severity and next steps\n2. **Distinguishes facts from hearsay** – Flags the marketing mention as unconfirmed so support doesn't chase leads based on secondhand information\n3. **Shows impact without overstating** – Acknowledges it's annoying without calling it critical, making it easier to prioritize\n4. **Invites collaboration** – Offers to provide additional details rather than making support guess what they need"
+    }
+  ]
+}

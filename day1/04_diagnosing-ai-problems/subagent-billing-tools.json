@@ -46,7 +46,7 @@
     },
     {
       "name": "issue_refund",
-      "description": "Issues a refund. Calls Stripe under the hood.",
+      "description": "Refund money on a PAID transaction. Get transaction_id from get_billing_history. amount is only the overcharged portion, not the whole charge.",
       "input_schema": {
         "type": "object",
         "properties": {
@@ -59,7 +59,7 @@
     },
     {
       "name": "adjust_invoice",
-      "description": "Invoice adjustment",
+      "description": "Credit on an OPEN, unpaid invoice only. For paid invoices use issue_refund.",
       "input_schema": {
         "type": "object",
         "properties": {

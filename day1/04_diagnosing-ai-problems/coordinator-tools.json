@@ -1,146 +1,41 @@
 {
   "tools": [
     {
-      "name": "get_customer",
-      "description": "Get customer information",
-      "input_schema": {
-        "type": "object",
-        "properties": {
-          "id": {"type": "string"}
-        },
-        "required": ["id"]
-      }
-    },
-    {
-      "name": "fetch_customer_details",
-      "description": "Fetches customer details",
-      "input_schema": {
-        "type": "object",
-        "properties": {
-          "customer_id": {"type": "string"}
-        },
-        "required": ["customer_id"]
-      }
-    },
-    {
-      "name": "fetch_customer_v2_databricks",
-      "description": "Queries the Databricks warehouse. v2 endpoint, use this not the old one.",
-      "input_schema": {
-        "type": "object",
-        "properties": {
-          "customer_id": {"type": "string"},
-          "lookback_days": {"type": "integer"}
-        },
-        "required": ["customer_id"]
-      }
-    },
-    {
-      "name": "lookup_customer_info",
-      "description": "Look up customer info by ID or email",
-      "input_schema": {
-        "type": "object",
-        "properties": {
-          "identifier": {"type": "string"}
-        },
-        "required": ["identifier"]
-      }
-    },
-    {
-      "name": "customer_data_retrieval",
-      "description": "Retrieves customer data.",
-      "input_schema": {
-        "type": "object",
-        "properties": {
-          "cust": {"type": "string"}
-        },
-        "required": ["cust"]
-      }
-    },
-    {
       "name": "get_ticket",
-      "description": "Gets a ticket",
+      "description": "Fetch the full ticket record: subject, body, submitter email, timestamps. Call this first.",
       "input_schema": {
         "type": "object",
         "properties": {
-          "ticket_id": {"type": "string"}
+          "ticket_id": {"type": "string", "description": "Ticket ID, e.g. T-4471"}
         },
         "required": ["ticket_id"]
       }
     },
     {
-      "name": "search_prior_tickets",
-      "description": "Searches tickets",
+      "name": "lookup_customer_info",
+      "description": "Identify the customer account from the submitter's email (or a customer_id). Returns customer_id, name, plan tier, and SSO status. Use this to find out who filed the ticket.",
       "input_schema": {
         "type": "object",
         "properties": {
-          "customer_id": {"type": "string"},
-          "query": {"type": "string"},
-          "limit": {"type": "integer"}
+          "identifier": {"type": "string", "description": "Submitter email address or customer_id"}
         },
-        "required": ["customer_id", "query"]
+        "required": ["identifier"]
       }
     },
     {
-      "name": "helper",
-      "description": "General helper function",
+      "name": "fetch_customer_details",
+      "description": "Account details for a known customer_id: MRR, signup date, primary and billing contacts, seats used vs. limit. Call after lookup_customer_info if you need billing or seat context.",
       "input_schema": {
         "type": "object",
         "properties": {
-          "action": {"type": "string"},
-          "params": {"type": "object"}
-        },
-        "required": ["action"]
-      }
-    },
-    {
-      "name": "process",
-      "description": "Process a request",
-      "input_schema": {
-        "type": "object",
-        "properties": {
-          "input": {"type": "string"}
-        },
-        "required": ["input"]
-      }
-    },
-    {
-      "name": "check_entitlements",
-      "description": "Takes a customer_id and returns entitlements",
-      "input_schema": {
-        "type": "object",
-        "properties": {
-          "customer_id": {"type": "string"},
-          "feature": {"type": "string"}
+          "customer_id": {"type": "string", "description": "customer_id returned by lookup_customer_info"}
         },
         "required": ["customer_id"]
       }
     },
     {
-      "name": "get_data",
-      "description": "Gets data",
-      "input_schema": {
-        "type": "object",
-        "properties": {
-          "type": {"type": "string"},
-          "id": {"type": "string"}
-        },
-        "required": ["type", "id"]
-      }
-    },
-    {
-      "name": "tool_3_v2",
-      "description": "Updated version of tool_3. Use this instead of tool_3.",
-      "input_schema": {
-        "type": "object",
-        "properties": {
-          "q": {"type": "string"}
-        },
-        "required": ["q"]
-      }
-    },
-    {
       "name": "check_system_status",
-      "description": "System status check",
+      "description": "Check whether a Meridian platform system has an ongoing incident. Use to rule out an outage on our side before blaming the customer's configuration.",
       "input_schema": {
         "type": "object",
         "properties": {
@@ -151,7 +46,7 @@
     },
     {
       "name": "spawn_specialist",
-      "description": "Spawns a specialist agent for the given category.",
+      "description": "Hand one category of the ticket to a specialist agent (billing, technical, or account). The specialist has the deep tools, does the actual resolution work, and returns a writeup. Call once per category the ticket touches.",
       "input_schema": {
         "type": "object",
         "properties": {
@@ -166,7 +61,7 @@
     },
     {
       "name": "write_response",
-      "description": "Writes the response.",
+      "description": "Send the final customer-facing reply and set the ticket status. Use \"resolved\" only if every issue the customer raised was actually fixed; \"needs_info\" if you need something from the customer; \"escalated\" after calling escalate_to_human.",
       "input_schema": {
         "type": "object",
         "properties": {
@@ -179,7 +74,7 @@
     },
     {
       "name": "escalate_to_human",
-      "description": "Escalates to a human.",
+      "description": "Hand the ticket to a human engineer. Use for security issues, anything needing a code change, or any issue no specialist could resolve.",
       "input_schema": {
         "type": "object",
         "properties": {
@@ -188,17 +83,6 @@
           "summary_for_human": {"type": "string"}
         },
         "required": ["ticket_id", "reason", "summary_for_human"]
-      }
-    },
-    {
-      "name": "validate",
-      "description": "Validates",
-      "input_schema": {
-        "type": "object",
-        "properties": {
-          "data": {"type": "string"}
-        },
-        "required": ["data"]
       }
     }
   ]

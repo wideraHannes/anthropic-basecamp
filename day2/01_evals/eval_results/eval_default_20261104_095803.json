@@ -1,0 +1,508 @@
+{
+  "runs": [
+    [
+      {
+        "task_id": "price_jeans",
+        "task_description": "Direct price lookup for jeans",
+        "query": "How much do jeans cost?",
+        "category": "product_lookup",
+        "passed": true,
+        "grades": [
+          {
+            "type": "response_contains",
+            "check": "49.99",
+            "score": 1.0,
+            "reason": "Found '49.99' in response"
+          },
+          {
+            "type": "tool_use",
+            "check": {
+              "tool_name": "get_product",
+              "arguments": {
+                "product": "jeans"
+              }
+            },
+            "score": 1.0,
+            "reason": "Tool 'get_product' called with matching args: {'product': 'jeans'}"
+          }
+        ],
+        "metrics": {
+          "time": 2.125,
+          "tool_calls": 1,
+          "turns": 2,
+          "input_tokens": 1640,
+          "output_tokens": 75
+        },
+        "final_text": "Jeans at our boutique cost **$49.99** per pair.",
+        "transcript": [
+          "How much do jeans cost?",
+          {
+            "id": "toolu_01P5GQwjvJkHZeEHV97CGM39",
+            "caller": {
+              "type": "direct"
+            },
+            "input": {
+              "product": "jeans"
+            },
+            "name": "get_product",
+            "type": "tool_use",
+            "toolset_name": null
+          },
+          {
+            "type": "tool_result",
+            "tool_use_id": "toolu_01P5GQwjvJkHZeEHV97CGM39",
+            "content": "(49.99, None)"
+          },
+          {
+            "citations": null,
+            "text": "Jeans at our boutique cost **$49.99** per pair.",
+            "type": "text"
+          }
+        ]
+      },
+      {
+        "task_id": "price_tshirt",
+        "task_description": "Price lookup for a hyphenated product name",
+        "query": "Price of a t-shirt?",
+        "category": "product_lookup",
+        "passed": true,
+        "grades": [
+          {
+            "type": "response_contains",
+            "check": "24.99",
+            "score": 1.0,
+            "reason": "Found '24.99' in response"
+          },
+          {
+            "type": "tool_use",
+            "check": {
+              "tool_name": "get_product",
+              "arguments": {
+                "product": "t-shirt"
+              }
+            },
+            "score": 1.0,
+            "reason": "Tool 'get_product' called with matching args: {'product': 't-shirt'}"
+          }
+        ],
+        "metrics": {
+          "time": 1.468,
+          "tool_calls": 1,
+          "turns": 2,
+          "input_tokens": 1641,
+          "output_tokens": 73
+        },
+        "final_text": "The price of a t-shirt is **$24.99**.",
+        "transcript": [
+          "Price of a t-shirt?",
+          {
+            "id": "toolu_01MjmbxV53DQrjfo9BVLMDUR",
+            "caller": {
+              "type": "direct"
+            },
+            "input": {
+              "product": "t-shirt"
+            },
+            "name": "get_product",
+            "type": "tool_use",
+            "toolset_name": null
+          },
+          {
+            "type": "tool_result",
+            "tool_use_id": "toolu_01MjmbxV53DQrjfo9BVLMDUR",
+            "content": "(24.99, None)"
+          },
+          {
+            "citations": null,
+            "text": "The price of a t-shirt is **$24.99**.",
+            "type": "text"
+          }
+        ]
+      },
+      {
+        "task_id": "price_shoes_synonym",
+        "task_description": "Synonym resolution: 'shoes' should resolve to sneakers",
+        "query": "How much for shoes?",
+        "category": "synonym",
+        "passed": false,
+        "grades": [
+          {
+            "type": "response_contains",
+            "check": "sneakers",
+            "score": 1.0,
+            "reason": "Found 'sneakers' in response"
+          },
+          {
+            "type": "response_contains",
+            "check": "74.99",
+            "score": 0.0,
+            "reason": "'74.99' not found in response: I'd be happy to help you find shoes! However, \"shoes\" is quite broad. Could you be more specific about what type of shoes you're interested in? For example:\n\n- Sneakers\n- Dress shoes\n- Boots\n- Sandals"
+          },
+          {
+            "type": "tool_use",
+            "check": {
+              "tool_name": "get_product",
+              "arguments": {
+                "product": "sneakers"
+              }
+            },
+            "score": 0.0,
+            "reason": "'get_product' not called with {'product': 'sneakers'}. Actual: []"
+          }
+        ],
+        "metrics": {
+          "time": 1.485,
+          "tool_calls": 0,
+          "turns": 1,
+          "input_tokens": 782,
+          "output_tokens": 101
+        },
+        "final_text": "I'd be happy to help you find shoes! However, \"shoes\" is quite broad. Could you be more specific about what type of shoes you're interested in? For example:\n\n- Sneakers\n- Dress shoes\n- Boots\n- Sandals\n- Athletic shoes\n- Casual flats\n- Or any other specific style?\n\nOnce you let me know what kind of shoes you're looking for, I can look up the price for you!",
+        "transcript": [
+          "How much for shoes?",
+          {
+            "citations": null,
+            "text": "I'd be happy to help you find shoes! However, \"shoes\" is quite broad. Could you be more specific about what type of shoes you're interested in? For example:\n\n- Sneakers\n- Dress shoes\n- Boots\n- Sandals\n- Athletic shoes\n- Casual flats\n- Or any other specific style?\n\nOnce you let me know what kind of shoes you're looking for, I can look up the price for you!",
+            "type": "text"
+          }
+        ]
+      },
+      {
+        "task_id": "total_shirts_belts",
+        "task_description": "Multi-product lookup plus total calculation",
+        "query": "3 shirts and 2 belts, what's my total?",
+        "category": "calculation",
+        "passed": true,
+        "grades": [
+          {
+            "type": "response_numeric",
+            "check": {
+              "value": 139.95,
+              "tolerance": 0.01
+            },
+            "score": 1.0,
+            "reason": "Found 139.95 (expected 139.95 +/- 0.01)"
+          },
+          {
+            "type": "tool_use",
+            "check": {
+              "tool_name": "get_product",
+              "arguments": {
+                "product": "shirt"
+              }
+            },
+            "score": 1.0,
+            "reason": "Tool 'get_product' called with matching args: {'product': 'shirt'}"
+          },
+          {
+            "type": "tool_use",
+            "check": {
+              "tool_name": "get_product",
+              "arguments": {
+                "product": "belt"
+              }
+            },
+            "score": 1.0,
+            "reason": "Tool 'get_product' called with matching args: {'product': 'belt'}"
+          },
+          {
+            "type": "tool_use",
+            "check": {
+              "tool_name": "calculate"
+            },
+            "score": 1.0,
+            "reason": "Tool 'calculate' was called"
+          }
+        ],
+        "metrics": {
+          "time": 5.028,
+          "tool_calls": 5,
+          "turns": 4,
+          "input_tokens": 4283,
+          "output_tokens": 421
+        },
+        "final_text": "Your total is **$139.95**\n\nHere's the breakdown:\n- 3 shirts @ $29.99 each = $89.97\n- 2 belts @ $24.99 each = $49.98",
+        "transcript": [
+          "3 shirts and 2 belts, what's my total?",
+          {
+            "citations": null,
+            "text": "I'll look up the prices for shirts and belts to calculate your total.",
+            "type": "text"
+          },
+          {
+            "id": "toolu_01UiBTHNWT18bFnHvhzap2qR",
+            "caller": {
+              "type": "direct"
+            },
+            "input": {
+              "product": "shirt"
+            },
+            "name": "get_product",
+            "type": "tool_use",
+            "toolset_name": null
+          },
+          {
+            "id": "toolu_014f6TLWJuLwPc49RE4muUnE",
+            "caller": {
+              "type": "direct"
+            },
+            "input": {
+              "product": "belt"
+            },
+            "name": "get_product",
+            "type": "tool_use",
+            "toolset_name": null
+          },
+          {
+            "type": "tool_result",
+            "tool_use_id": "toolu_01UiBTHNWT18bFnHvhzap2qR",
+            "content": "(29.99, None)"
+          },
+          {
+            "type": "tool_result",
+            "tool_use_id": "toolu_014f6TLWJuLwPc49RE4muUnE",
+            "content": "(24.99, None)"
+          },
+          {
+            "citations": null,
+            "text": "Now let me calculate your total:",
+            "type": "text"
+          },
+          {
+            "id": "toolu_0179UhkyAK17RvegiZcvKdTZ",
+            "caller": {
+              "type": "direct"
+            },
+            "input": {
+              "op": "*",
+              "input1": 3,
+              "input2": 29.99
+            },
+            "name": "calculate",
+            "type": "tool_use",
+            "toolset_name": null
+          },
+          {
+            "id": "toolu_01EacQZ8jMKgebNSH6R8QYNX",
+            "caller": {
+              "type": "direct"
+            },
+            "input": {
+              "op": "*",
+              "input1": 2,
+              "input2": 24.99
+            },
+            "name": "calculate",
+            "type": "tool_use",
+            "toolset_name": null
+          },
+          {
+            "type": "tool_result",
+            "tool_use_id": "toolu_0179UhkyAK17RvegiZcvKdTZ",
+            "content": "89.97"
+          },
+          {
+            "type": "tool_result",
+            "tool_use_id": "toolu_01EacQZ8jMKgebNSH6R8QYNX",
+            "content": "49.98"
+          },
+          {
+            "id": "toolu_014iSxECDVmJbo4bm5Kfygtt",
+            "caller": {
+              "type": "direct"
+            },
+            "input": {
+              "op": "+",
+              "input1": 89.97,
+              "input2": 49.98
+            },
+            "name": "calculate",
+            "type": "tool_use",
+            "toolset_name": null
+          },
+          {
+            "type": "tool_result",
+            "tool_use_id": "toolu_014iSxECDVmJbo4bm5Kfygtt",
+            "content": "139.95"
+          },
+          {
+            "citations": null,
+            "text": "Your total is **$139.95**\n\nHere's the breakdown:\n- 3 shirts @ $29.99 each = $89.97\n- 2 belts @ $24.99 each = $49.98",
+            "type": "text"
+          }
+        ]
+      },
+      {
+        "task_id": "discount_jacket",
+        "task_description": "Product lookup plus percentage discount",
+        "query": "What's 20% off a jacket?",
+        "category": "calculation",
+        "passed": true,
+        "grades": [
+          {
+            "type": "response_numeric",
+            "check": {
+              "value": 71.99,
+              "tolerance": 0.01
+            },
+            "score": 1.0,
+            "reason": "Found 71.99 (expected 71.99 +/- 0.01)"
+          },
+          {
+            "type": "tool_use",
+            "check": {
+              "tool_name": "get_product",
+              "arguments": {
+                "product": "jacket"
+              }
+            },
+            "score": 1.0,
+            "reason": "Tool 'get_product' called with matching args: {'product': 'jacket'}"
+          },
+          {
+            "type": "tool_use",
+            "check": {
+              "tool_name": "calculate"
+            },
+            "score": 1.0,
+            "reason": "Tool 'calculate' was called"
+          }
+        ],
+        "metrics": {
+          "time": 4.169,
+          "tool_calls": 3,
+          "turns": 4,
+          "input_tokens": 3808,
+          "output_tokens": 333
+        },
+        "final_text": "**Our jacket is $89.99, and with 20% off it would be $71.99!**\n\nThat's a savings of $18.00.",
+        "transcript": [
+          "What's 20% off a jacket?",
+          {
+            "citations": null,
+            "text": "I need to find a jacket in our catalog first to tell you the price and calculate the 20% discount.",
+            "type": "text"
+          },
+          {
+            "id": "toolu_01M8GCEPxB16ereGmykpzn1p",
+            "caller": {
+              "type": "direct"
+            },
+            "input": {
+              "product": "jacket"
+            },
+            "name": "get_product",
+            "type": "tool_use",
+            "toolset_name": null
+          },
+          {
+            "type": "tool_result",
+            "tool_use_id": "toolu_01M8GCEPxB16ereGmykpzn1p",
+            "content": "(89.99, None)"
+          },
+          {
+            "citations": null,
+            "text": "Great! We have a jacket for $89.99. Now let me calculate 20% off that price.",
+            "type": "text"
+          },
+          {
+            "id": "toolu_0132isg6qwp3HngZuk9onVB1",
+            "caller": {
+              "type": "direct"
+            },
+            "input": {
+              "op": "*",
+              "input1": 89.99,
+              "input2": 0.2
+            },
+            "name": "calculate",
+            "type": "tool_use",
+            "toolset_name": null
+          },
+          {
+            "type": "tool_result",
+            "tool_use_id": "toolu_0132isg6qwp3HngZuk9onVB1",
+            "content": "17.998"
+          },
+          {
+            "citations": null,
+            "text": "Now let me subtract that discount from the original price:",
+            "type": "text"
+          },
+          {
+            "id": "toolu_01AxdFrTHje8JnhaCuMUrrUr",
+            "caller": {
+              "type": "direct"
+            },
+            "input": {
+              "op": "-",
+              "input1": 89.99,
+              "input2": 17.998
+            },
+            "name": "calculate",
+            "type": "tool_use",
+            "toolset_name": null
+          },
+          {
+            "type": "tool_result",
+            "tool_use_id": "toolu_01AxdFrTHje8JnhaCuMUrrUr",
+            "content": "71.99199999999999"
+          },
+          {
+            "citations": null,
+            "text": "**Our jacket is $89.99, and with 20% off it would be $71.99!**\n\nThat's a savings of $18.00.",
+            "type": "text"
+          }
+        ]
+      },
+      {
+        "task_id": "catalog_overview",
+        "task_description": "Agent can describe what it sells",
+        "query": "What do you sell?",
+        "category": "capabilities",
+        "passed": false,
+        "grades": [
+          {
+            "type": "response_contains",
+            "check": "jeans",
+            "score": 1.0,
+            "reason": "Found 'jeans' in response"
+          },
+          {
+            "type": "response_contains",
+            "check": "sneakers",
+            "score": 0.0,
+            "reason": "'sneakers' not found in response: I'm a shopping assistant for a clothing boutique! We sell clothing items like:\n\n- **Tops** (shirts, blouses, t-shirts, sweaters)\n- **Bottoms** (pants, jeans, skirts, shorts)\n- **Dresses**\n- **Outerwea"
+          },
+          {
+            "type": "response_contains",
+            "check": "jacket",
+            "score": 1.0,
+            "reason": "Found 'jacket' in response"
+          }
+        ],
+        "metrics": {
+          "time": 1.642,
+          "tool_calls": 0,
+          "turns": 1,
+          "input_tokens": 782,
+          "output_tokens": 144
+        },
+        "final_text": "I'm a shopping assistant for a clothing boutique! We sell clothing items like:\n\n- **Tops** (shirts, blouses, t-shirts, sweaters)\n- **Bottoms** (pants, jeans, skirts, shorts)\n- **Dresses**\n- **Outerwear** (jackets, coats)\n- **Accessories** (scarves, hats, belts)\n- And more!\n\nFeel free to ask me about any specific clothing item you're looking for, and I can look up what we have in stock, check prices, help you calculate totals, or answer any questions about our products!",
+        "transcript": [
+          "What do you sell?",
+          {
+            "citations": null,
+            "text": "I'm a shopping assistant for a clothing boutique! We sell clothing items like:\n\n- **Tops** (shirts, blouses, t-shirts, sweaters)\n- **Bottoms** (pants, jeans, skirts, shorts)\n- **Dresses**\n- **Outerwear** (jackets, coats)\n- **Accessories** (scarves, hats, belts)\n- And more!\n\nFeel free to ask me about any specific clothing item you're looking for, and I can look up what we have in stock, check prices, help you calculate totals, or answer any questions about our products!",
+            "type": "text"
+          }
+        ]
+      }
+    ]
+  ],
+  "config": {
+    "model": null,
+    "num_runs": 1,
+    "num_tasks": 6
+  }
+}
